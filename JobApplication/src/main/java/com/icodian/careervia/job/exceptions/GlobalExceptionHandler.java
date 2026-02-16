@@ -122,6 +122,19 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
 	}
 	
+	@ExceptionHandler(InvalidJobDataException.class)
+	public ResponseEntity<ApiResponse> handleInvalidJobDataException(InvalidJobDataException ex)
+	{
+		String message = ex.getMessage();
+		
+		ApiResponse apiResponse = ApiResponse.builder()
+				.message(message)
+				.success(false)
+				.status(HttpStatus.BAD_REQUEST)
+				.build();
+		
+		return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+	}
 	
 
 }

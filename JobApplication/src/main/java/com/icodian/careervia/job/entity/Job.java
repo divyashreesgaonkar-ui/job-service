@@ -23,11 +23,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @Table(name = "job")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Job {
 
 	@Id
@@ -67,7 +71,7 @@ public class Job {
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)
-	private JobStatus status = JobStatus.OPENED;
+	private JobStatus job_status = JobStatus.OPENED;
 
 	@OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<Application> application;
