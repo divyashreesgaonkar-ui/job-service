@@ -136,5 +136,19 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
 	}
 	
+	@ExceptionHandler(UnauthorizedAccessException.class)
+	public ResponseEntity<ApiResponse> handleUnauthorizedAccessException(UnauthorizedAccessException ex)
+	{
+		String message = ex.getMessage();
+		
+		ApiResponse apiResponse = ApiResponse.builder()
+				.message(message)
+				.success(false)
+				.status(HttpStatus.FORBIDDEN)
+				.build();
+		
+		return new ResponseEntity<>(apiResponse, HttpStatus.FORBIDDEN);
+	}
+	
 
 }
