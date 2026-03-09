@@ -1,5 +1,6 @@
 package com.icodian.careervia.job.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,12 +11,15 @@ import com.icodian.careervia.job.dto.JobDetailResponseDTO;
 import com.icodian.careervia.job.dto.JobListResponseDTO;
 import com.icodian.careervia.job.dto.JobRequestDTO;
 import com.icodian.careervia.job.dto.JobResponseDTO;
+import com.icodian.careervia.job.dto.UpdateJobRequestDTO;
 import com.icodian.careervia.job.entity.Job;
+import com.icodian.careervia.job.entity.constant.ApprovalStatus;
 import com.icodian.careervia.job.entity.constant.JobStatus;
 import com.icodian.careervia.job.entity.constant.UserRole;
 import com.icodian.careervia.job.exceptions.InvalidJobDataException;
 import com.icodian.careervia.job.exceptions.JobAlreadyClosedException;
 import com.icodian.careervia.job.exceptions.JobNotFoundException;
+import com.icodian.careervia.job.exceptions.JobNotUpdatableException;
 import com.icodian.careervia.job.exceptions.UnauthorizedAccessException;
 import com.icodian.careervia.job.repository.JobRepository;
 import com.icodian.careervia.job.service.JobService;
@@ -30,6 +34,27 @@ public class JobServiceImpl implements JobService {
 
 	@Autowired
 	private final JobRepository jobRepository;
+	
+	// Statuses restricted for Job Seekers
+		private static final List<JobStatus> RESTRICTED_STATUSES = List.of(
+			    JobStatus.CLOSED,
+			    JobStatus.DISABLED,
+			    JobStatus.EXPIRED
+			);
+	
+	// Statuses that completely block updates
+/*	private static final List<JobStatus> NON_UPDATABLE_STATUSES = List.of(
+		    JobStatus.CLOSED,
+		    JobStatus.EXPIRED,
+		    JobStatus.DISABLED
+		);
+*/
+		
+		// Critical fields that require Admin reapproval if changed
+		private static final String CRITICAL_FIELD_SALARY     = "Salary";
+		private static final String CRITICAL_FIELD_EXPERIENCE = "Experience Level";
+		private static final String CRITICAL_FIELD_JOB_TYPE   = "Job Type";
+		private static final String CRITICAL_FIELD_TITLE      = "Job Title";
 
 	@Override
 	public JobResponseDTO createJob(JobRequestDTO request) {
@@ -124,12 +149,7 @@ public class JobServiceImpl implements JobService {
 		return response;
 	}
 	
-	// Statuses restricted for Job Seekers
-	private static final List<JobStatus> RESTRICTED_STATUSES = List.of(
-		    JobStatus.CLOSED,
-		    JobStatus.DISABLED,
-		    JobStatus.EXPIRED
-		);
+	
 
 	@Override
 	public JobDetailResponseDTO getJobById(Long job_id, UserRole userRole) {
@@ -176,6 +196,150 @@ public class JobServiceImpl implements JobService {
 		
 		return response;
 		
+	}
+
+	@Override
+	public JobResponseDTO updateJob(Long job_id, UpdateJobRequestDTO request) {
+		// TODO Auto-generated method stub
+		log.info("HR requested update for Job ID: {}", job_id);
+		
+//		Check if job exists
+		Job job = jobRepository.findById(job_id)
+	            .orElseThrow(() -> new JobNotFoundException(
+	                "Job not found with ID: " + job_id));
+		
+//		Block update if job is CLOSED / EXPIRED / DISABLED
+		if (RESTRICTED_STATUSES.contains(job.getJob_status())) {
+	        log.warn("Update blocked for Job ID: {} — Status is: {}", job_id, job.getJob_status());
+	        throw new JobNotUpdatableException(
+	            "Job cannot be updated because its current status is: "
+	            + job.getJob_status()
+	            + ". Updates are only allowed for OPENED, DRAFT or ON_HOLD jobs.");
+	    }
+		
+		if(!(request.getSalary() != null)) {
+			throw new InvalidJobDataException(
+		            "Salary cannot be zero.");
+		}
+		
+//		Detect critical field changes — collect changed field names
+		List<String> changedCriticalFields = new ArrayList<>();
+		
+		if (request.getJob_title() != null
+	            && !request.getJob_title().equals(job.getJob_title())) {
+	        changedCriticalFields.add(CRITICAL_FIELD_TITLE);
+	    }
+
+	    if (request.getExperience() != null
+	            && !request.getExperience().equals(job.getExperience())) {
+	        changedCriticalFields.add(CRITICAL_FIELD_EXPERIENCE);
+	    }
+
+	    if (request.getJob_type() != null
+	            && !request.getJob_type().equals(job.getJob_type())) {
+	        changedCriticalFields.add(CRITICAL_FIELD_JOB_TYPE);
+	    }
+	    
+	    boolean salaryChanged =
+	            (request.getSalary() != null
+	                && !request.getSalary().equals(job.getSalary()));
+	    
+	    if (salaryChanged) {
+	        changedCriticalFields.add(CRITICAL_FIELD_SALARY);
+	    }
+	    
+//	    Apply non-critical field updates directly
+	    
+	    if (request.getDescription() != null) {
+	        job.setDescription(request.getDescription());
+	    }
+	    
+	    if (request.getLocation() != null) {
+	        job.setLocation(request.getLocation());
+	    }
+	    
+	    if (request.getRequired_skills() != null) {
+	        job.setSkills(request.getRequired_skills());
+	    }
+	    
+	    if (request.getJob_status() != null) {
+	        job.setJob_status(request.getJob_status());
+	    }
+	    
+//	    Apply critical field updates & flag for re-approval if changed
+	    String responseMessage;
+	    
+	    if (!changedCriticalFields.isEmpty()) {
+	    	
+	    	// Apply the critical field changes
+	        if (request.getJob_title() != null) {
+	            job.setJob_title(request.getJob_title());
+	        }
+	        if (request.getExperience() != null) {
+	            job.setExperience(request.getExperience());
+	        }
+	        if (request.getJob_type() != null) {
+	            job.setJob_type(request.getJob_type());
+	        }
+	        if (request.getSalary() != null) {
+	            job.setSalary(request.getSalary());
+	        }
+	        
+//	        Flag job as PENDING_APPROVAL for Admin review
+	        
+	        job.setApprovalStatus(ApprovalStatus.PENDING_APPROVAL);
+	        job.setPendingChangesSummary(
+	            "Critical fields changed by HR: [" +
+	            String.join(", ", changedCriticalFields) + "]" +
+	            " — Awaiting Admin reapproval.");
+
+	        responseMessage =
+	            "Job updated successfully. However, the following critical fields " +
+	            "were changed: [" + String.join(", ", changedCriticalFields) + "]. " +
+	            "Admin reapproval is required before these changes take effect publicly.";
+
+	        log.info("Job ID: {} flagged for Admin reapproval. Changed fields: {}",
+	                 job_id, changedCriticalFields);
+
+	    }else {
+	    	// No critical fields changed — no re-approval needed
+	        job.setApprovalStatus(ApprovalStatus.APPROVED);
+	        job.setPendingChangesSummary(null);
+
+	        responseMessage = "Job updated successfully. No reapproval required.";
+	        log.info("Job ID: {} updated successfully without reapproval.", job_id);
+	        	    	
+	    }
+	    
+//	    Save updated job
+	    
+	    Job updatedJob = jobRepository.save(job);
+	    
+	    return mapToJobResponseDTO(updatedJob, responseMessage);
+	    
+	}
+	
+//	Mapper
+	
+	private JobResponseDTO mapToJobResponseDTO(Job job, String message) {
+	    JobResponseDTO response = new JobResponseDTO();
+	    response.setJob_id(job.getJob_id());
+	    response.setJob_title(job.getJob_title());
+	    response.setDescription(job.getDescription());
+	    response.setLocation(job.getLocation());
+	    response.setExperience(job.getExperience());
+	    response.setSalary(job.getSalary());
+	    response.setJob_type(job.getJob_type());
+	    response.setRequired_skills(job.getSkills());
+	    response.setJob_status(job.getJob_status());
+	    response.setMessage(message);
+	    return response;
+	}
+
+	@Override
+	public boolean isJobExists(Long job_id) {
+		// TODO Auto-generated method stub
+		return jobRepository.existsById(job_id);
 	}
 
 }

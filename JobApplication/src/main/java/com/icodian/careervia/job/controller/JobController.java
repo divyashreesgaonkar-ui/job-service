@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +18,7 @@ import com.icodian.careervia.job.dto.JobDetailResponseDTO;
 import com.icodian.careervia.job.dto.JobListResponseDTO;
 import com.icodian.careervia.job.dto.JobRequestDTO;
 import com.icodian.careervia.job.dto.JobResponseDTO;
+import com.icodian.careervia.job.dto.UpdateJobRequestDTO;
 import com.icodian.careervia.job.entity.constant.JobStatus;
 import com.icodian.careervia.job.entity.constant.UserRole;
 import com.icodian.careervia.job.service.JobService;
@@ -81,6 +83,16 @@ public class JobController {
 		
 		JobDetailResponseDTO response = jobService.getJobById(job_id, userRole);
 		return ResponseEntity.ok(response);
+	}
+	
+	@PatchMapping("/{jobId}")
+	public ResponseEntity<JobResponseDTO> updateJob(
+	        @PathVariable Long jobId,
+	        @Valid @RequestBody UpdateJobRequestDTO request) {
+
+	    log.info("HR requested update for Job ID: {}", jobId);
+	    JobResponseDTO response = jobService.updateJob(jobId, request);
+	    return ResponseEntity.ok(response);
 	}
 
 }

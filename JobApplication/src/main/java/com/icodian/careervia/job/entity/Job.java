@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.icodian.careervia.job.entity.constant.ApprovalStatus;
 import com.icodian.careervia.job.entity.constant.JobStatus;
 import com.icodian.careervia.job.entity.constant.JobType;
 
@@ -72,6 +73,12 @@ public class Job {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)
 	private JobStatus job_status = JobStatus.OPENED;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "approvalStatus", nullable = false)
+	private ApprovalStatus approvalStatus = ApprovalStatus.PENDING_APPROVAL;
+	
+	private String pendingChangesSummary; // Tracks what critical fields changed
 
 	@OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<Application> application;
