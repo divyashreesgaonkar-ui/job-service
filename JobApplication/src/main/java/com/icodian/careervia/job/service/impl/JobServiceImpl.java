@@ -6,15 +6,19 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import com.icodian.careervia.job.dto.JobDetailResponseDTO;
 import com.icodian.careervia.job.dto.JobListResponseDTO;
 import com.icodian.careervia.job.dto.JobRequestDTO;
 import com.icodian.careervia.job.dto.JobResponseDTO;
 import com.icodian.careervia.job.dto.UpdateJobRequestDTO;
+import com.icodian.careervia.job.entity.Company;
 import com.icodian.careervia.job.entity.Job;
 import com.icodian.careervia.job.entity.constant.ApprovalStatus;
 import com.icodian.careervia.job.entity.constant.JobStatus;
+import com.icodian.careervia.job.entity.constant.JobType;
 import com.icodian.careervia.job.entity.constant.UserRole;
 import com.icodian.careervia.job.exceptions.InvalidJobDataException;
 import com.icodian.careervia.job.exceptions.JobAlreadyClosedException;
@@ -28,60 +32,58 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class JobServiceImpl implements JobService {
 
 	@Autowired
-	private final JobRepository jobRepository;
+	private JobRepository jobRepository;
 	
-	// Statuses restricted for Job Seekers
-		private static final List<JobStatus> RESTRICTED_STATUSES = List.of(
-			    JobStatus.CLOSED,
-			    JobStatus.DISABLED,
-			    JobStatus.EXPIRED
-			);
+	@Autowired
+	private RestTemplate restTemplate;
 	
-	// Statuses that completely block updates
-/*	private static final List<JobStatus> NON_UPDATABLE_STATUSES = List.of(
-		    JobStatus.CLOSED,
-		    JobStatus.EXPIRED,
-		    JobStatus.DISABLED
-		);
-*/
-		
-		// Critical fields that require Admin reapproval if changed
-		private static final String CRITICAL_FIELD_SALARY     = "Salary";
-		private static final String CRITICAL_FIELD_EXPERIENCE = "Experience Level";
-		private static final String CRITICAL_FIELD_JOB_TYPE   = "Job Type";
-		private static final String CRITICAL_FIELD_TITLE      = "Job Title";
+	private Company company;
+	
 
 	@Override
 	public JobResponseDTO createJob(JobRequestDTO request) {
 		// TODO Auto-generated method stub
 
-		log.info("Creating job with title: {}", request.getJob_title());
+//		log.info("Creating job with title: {} for company ID: {}", request.getJob_title(), request.getCompany_id());
 
 //		Validate the salary if it is null and throw an exception
 		if (request.getSalary() == null) {
 			throw new InvalidJobDataException("Salary is required");
 		}
+		
+//		Validate Company exists by calling Company Service
+//		CompanyResponseDTO company = companyClient.getCompanyById(request.getCompany_id());
+//		log.info("Company validated: {})", company.getCompanyId());
+		
+//		company.setCompanyId(request.getCompany_id());
+		
+		Company company_info = restTemplate.getForObject("http://COMPANY-MICROSERVICE/api/companies/" 
+				+ request.getCompany_id() , Company.class);
+		if(company_info == null) {
+			throw new RuntimeException("Company not found");
+			
+		}
 
 //		Creating the job entity
 		Job job = new Job();
+	
 		job.setJob_title(request.getJob_title());
 		job.setDescription(request.getDescriprtion());
 		job.setLocation(request.getLocation());
 		job.setExperience(request.getExperience());
 		job.setSalary(request.getSalary());
 		job.setJob_type(request.getJob_type());
-		job.setSkills(request.getRequired_skills());
+		job.setRequired_skills(request.getRequired_skills());
 		job.setPosted_date(request.getPosted_date());
-		job.setCompany_id(request.getCompany_id());
+		job.setCompanyId(request.getCompany_id());
 		job.setJob_status(request.getJob_status());
-
+		
 		Job savedJob = jobRepository.save(job);
-		log.info("Job created successfully with job ID", savedJob.getJob_id());
+		log.info("Job created successfully with job ID: {} ", savedJob.getJob_id());
 
 		return mapToResponse(savedJob);
 	}
@@ -97,19 +99,26 @@ public class JobServiceImpl implements JobService {
 		response.setExperience(job.getExperience());
 		response.setSalary(job.getSalary());
 		response.setJob_type(job.getJob_type());
-		response.setRequired_skills(job.getSkills());
+		response.setRequired_skills(job.getRequired_skills());
 		response.setPosted_date(job.getPosted_date());
-		response.setCompany_id(job.getCompany_id());
+		response.setCompany_id(job.getCompanyId());
 		response.setJob_status(job.getJob_status());
 
 		return response;
 	}
 
-	@Override
-	public List<JobListResponseDTO> getAlljobs(UserRole userRole, JobStatus status) {
+/*	@Override
+	@Transactional(readOnly = true)
+	public List<JobListResponseDTO> getAlljobs(
+			UserRole userRole, 
+			JobStatus status, 
+			String location, 
+			String company_name, 
+			JobType jobType, 
+			String experience) {
 		// TODO Auto-generated method stub
-		log.info("Fetching jobs for role: {} with filters - status: {}", 
-                userRole, status);
+		log.info("Fetching jobs for role: {} with filters - status: {}, location: {}, company: {}", 
+                userRole, status, location, company_name);
 		
 //		Job Seekers can only see ACTIVE jobs
 		if(userRole == UserRole.JOB_SEEKER) {
@@ -120,7 +129,7 @@ public class JobServiceImpl implements JobService {
 		}
 		
 //		Fetch jobs based on filters
-		List<Job> jobs = jobRepository.findJobsByFilters(status);
+		List<Job> jobs = jobRepository.findJobsByFilters(status, location, company_name, jobType, experience);
 		
 		log.info("Found {} jobs matching the criteria", jobs.size());
 		
@@ -143,7 +152,7 @@ public class JobServiceImpl implements JobService {
 		response.setJob_type(job.getJob_type());
 		response.setRequired_skills(job.getSkills());
 		response.setPosted_date(job.getPosted_date());
-		response.setCompany_id(job.getCompany_id());
+		response.setCompany_id(job.getCompanyId());
 		response.setJob_status(job.getJob_status());	
 		
 		return response;
@@ -152,6 +161,7 @@ public class JobServiceImpl implements JobService {
 	
 
 	@Override
+	@Transactional(readOnly = true)
 	public JobDetailResponseDTO getJobById(Long job_id, UserRole userRole) {
 		// TODO Auto-generated method stub
 		
@@ -192,7 +202,7 @@ public class JobServiceImpl implements JobService {
 		response.setLocation(job.getLocation());
 		response.setSalary(job.getSalary());
 		response.setJob_type(job.getJob_type());
-		response.setCompany_id(job.getCompany_id());
+		response.setCompany_id(job.getCompanyId());
 		
 		return response;
 		
@@ -341,5 +351,5 @@ public class JobServiceImpl implements JobService {
 		// TODO Auto-generated method stub
 		return jobRepository.existsById(job_id);
 	}
-
+*/
 }

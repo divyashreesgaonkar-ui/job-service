@@ -2,6 +2,7 @@ package com.icodian.careervia.job.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,35 +21,39 @@ import com.icodian.careervia.job.dto.JobRequestDTO;
 import com.icodian.careervia.job.dto.JobResponseDTO;
 import com.icodian.careervia.job.dto.UpdateJobRequestDTO;
 import com.icodian.careervia.job.entity.constant.JobStatus;
+import com.icodian.careervia.job.entity.constant.JobType;
 import com.icodian.careervia.job.entity.constant.UserRole;
 import com.icodian.careervia.job.service.JobService;
 
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/jobs")
-@RequiredArgsConstructor
 @Slf4j
 public class JobController {
 	
-	private final JobService jobService;
+	@Autowired
+	private JobService jobService;
 	
 	@PostMapping
-	public ResponseEntity<JobResponseDTO> createJob(@Valid @RequestBody JobRequestDTO request){
+	public ResponseEntity<JobResponseDTO> createJob(@RequestBody JobRequestDTO request){
 		
 		log.info("Received request to create job: {}", request.getJob_title());
 		
 		JobResponseDTO response = jobService.createJob(request);
-		return new ResponseEntity<>(response, HttpStatus.CREATED);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 		
 	}
 	
-	@GetMapping
+	
+/*	@GetMapping
 	public ResponseEntity<List<JobListResponseDTO>> getAllJobs(
 			@RequestHeader(value = "X-User-Role", defaultValue = "JOB_SEEKER") String userRoleHeader,
-			@RequestParam(required = false) JobStatus status){
+			@RequestParam(required = false) JobStatus status,
+			@RequestParam String location,
+			@RequestParam String company_name,
+			@RequestParam JobType jobType,
+			@RequestParam String experience){
 		
 		log.info("Received request to fetch jobs with role: {}, status: {}", userRoleHeader, status);
 		
@@ -60,7 +65,7 @@ public class JobController {
 			userRole = UserRole.JOB_SEEKER;
 		}
 		
-		List<JobListResponseDTO> jobs = jobService.getAlljobs(userRole, status);
+		List<JobListResponseDTO> jobs = jobService.getAlljobs(userRole, status, location, company_name, jobType, experience);
 		return ResponseEntity.ok(jobs);
 		
 	}
@@ -94,5 +99,6 @@ public class JobController {
 	    JobResponseDTO response = jobService.updateJob(jobId, request);
 	    return ResponseEntity.ok(response);
 	}
+	*/
 
 }

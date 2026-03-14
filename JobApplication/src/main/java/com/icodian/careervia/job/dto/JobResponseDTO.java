@@ -7,13 +7,13 @@ import java.util.List;
 import com.icodian.careervia.job.entity.constant.JobStatus;
 import com.icodian.careervia.job.entity.constant.JobType;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Setter
+@Getter
 public class JobResponseDTO {
 	
 	private Long job_id;
@@ -27,6 +27,6 @@ public class JobResponseDTO {
 	private LocalDate posted_date;
 	private Long company_id;
 	private JobStatus job_status;
-	private String message;
+//	private String message;
 
 }
