@@ -8,7 +8,6 @@ import com.icodian.careervia.job.entity.constant.JobStatus;
 import com.icodian.careervia.job.entity.constant.JobType;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
