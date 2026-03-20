@@ -30,10 +30,10 @@ public class Job {
 	@Id
 	@Column(name = "job_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long job_id;
+	private Long jobId;
 
 	@Column(name = "job_title")
-	private String job_title;
+	private String jobTitle;
 
 	@Column(name = "description", columnDefinition = "TEXT")
 	private String description;
@@ -49,21 +49,21 @@ public class Job {
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "job_type")
-	private JobType job_type = JobType.FULLTIME;
+	private JobType jobType = JobType.FULLTIME;
 
 	@ElementCollection
 	@Column(name = "skill")
-	List<String> required_skills = new ArrayList<>();
+	List<String> requiredSkills = new ArrayList<>();
 
 	@Column(name = "posted_date")
-	private LocalDate posted_date;
+	private LocalDate postedDate;
 
 	@Column(name = "COMPANY_ID")
 	private Long companyId;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status")
-	private JobStatus job_status = JobStatus.OPENED;
+	private JobStatus jobStatus = JobStatus.OPENED;
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<Application> application;

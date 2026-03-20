@@ -16,7 +16,7 @@ public interface JobService {
 
 	JobResponseDTO updateJob(Long jobId, JobRequestDTO request);
 
-	String deleteJob(Long job_id);
+	String deleteJob(Long jobId);
 	
 
 }

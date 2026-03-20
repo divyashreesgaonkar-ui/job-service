@@ -16,17 +16,17 @@ import lombok.Setter;
 @Getter
 public class JobResponseDTO {
 	
-	private Long job_id;
-	private String job_title;
+	private Long jobId;
+	private String jobTitle;
 	private String description;
 	private String location;
 	private String experience;
 	private String salary;
-	private JobType job_type;
-	List<String> required_skills = new ArrayList<>();
-	private LocalDate posted_date;
-	private Long company_id;
-	private JobStatus job_status;
+	private JobType jobType;
+	List<String> requiredSkills = new ArrayList<>();
+	private LocalDate postedDate;
+	private Long companyId;
+	private JobStatus jobStatus;
 //	private String message;
 
 }

@@ -36,8 +36,8 @@ public class JobServiceImpl implements JobService {
 //		log.info("Creating job with title: {} for company ID: {}", request.getJob_title(), request.getCompany_id());
 
 //		Validate the salary if it is null and throw an exception
-		if (request.getSalary() == null) {
-			throw new InvalidJobDataException("Salary is required");
+		if (request == null) {
+			throw new InvalidJobDataException("Job is required");
 		}
 
 //		Validate Company exists by calling Company Service
@@ -47,7 +47,7 @@ public class JobServiceImpl implements JobService {
 //		company.setCompanyId(request.getCompany_id());
 
 		Company company_info = restTemplate
-				.getForObject("http://COMPANY-MICROSERVICE/api/companies/" + request.getCompany_id(), Company.class);
+				.getForObject("http://COMPANY-MICROSERVICE/api/companies/" + request.getCompanyId(), Company.class);
 		if (company_info == null) {
 			throw new RuntimeException("Company not found");
 
@@ -56,19 +56,19 @@ public class JobServiceImpl implements JobService {
 //		Creating the job entity
 		Job job = new Job();
 
-		job.setJob_title(request.getJob_title());
+		job.setJobTitle(request.getJobTitle());
 		job.setDescription(request.getDescriprtion());
 		job.setLocation(request.getLocation());
 		job.setExperience(request.getExperience());
 		job.setSalary(request.getSalary());
-		job.setJob_type(request.getJob_type());
-		job.setRequired_skills(request.getRequired_skills());
-		job.setPosted_date(request.getPosted_date());
-		job.setCompanyId(request.getCompany_id());
-		job.setJob_status(request.getJob_status());
+		job.setJobType(request.getJobType());
+		job.setRequiredSkills(request.getRequiredSkills());
+		job.setPostedDate(request.getPostedDate());
+		job.setCompanyId(request.getCompanyId());
+		job.setJobStatus(request.getJobStatus());
 
 		Job savedJob = jobRepository.save(job);
-		log.info("Job created successfully with job ID: {} ", savedJob.getJob_id());
+		log.info("Job created successfully with job ID: {} ", savedJob.getJobId());
 
 		return mapToResponse(savedJob);
 	}
@@ -77,17 +77,17 @@ public class JobServiceImpl implements JobService {
 		// TODO Auto-generated method stub
 
 		JobResponseDTO response = new JobResponseDTO();
-		response.setJob_id(job.getJob_id());
-		response.setJob_title(job.getJob_title());
+		response.setJobId(job.getJobId());
+		response.setJobTitle(job.getJobTitle());
 		response.setDescription(job.getDescription());
 		response.setLocation(job.getLocation());
 		response.setExperience(job.getExperience());
 		response.setSalary(job.getSalary());
-		response.setJob_type(job.getJob_type());
-		response.setRequired_skills(job.getRequired_skills());
-		response.setPosted_date(job.getPosted_date());
-		response.setCompany_id(job.getCompanyId());
-		response.setJob_status(job.getJob_status());
+		response.setJobType(job.getJobType());
+		response.setRequiredSkills(job.getRequiredSkills());
+		response.setPostedDate(job.getPostedDate());
+		response.setCompanyId(job.getCompanyId());
+		response.setJobStatus(job.getJobStatus());
 
 		return response;
 	}
@@ -105,16 +105,16 @@ public class JobServiceImpl implements JobService {
 		 
 		  JobResponseDTO response = new JobResponseDTO();
 		 
-		 response.setJob_id(job.getJob_id());
-		 response.setJob_title(job.getJob_title());
+		 response.setJobId(job.getJobId());
+		 response.setJobTitle(job.getJobTitle());
 		 response.setDescription(job.getDescription());
 		 response.setLocation(job.getLocation());
 		 response.setExperience(job.getExperience());
-		 response.setSalary(job.getSalary()); response.setJob_type(job.getJob_type());
-		 response.setRequired_skills(job.getRequired_skills());
-		 response.setPosted_date(job.getPosted_date());
-		 response.setCompany_id(job.getCompanyId());
-		 response.setJob_status(job.getJob_status());
+		 response.setSalary(job.getSalary()); response.setJobType(job.getJobType());
+		 response.setRequiredSkills(job.getRequiredSkills());
+		 response.setPostedDate(job.getPostedDate());
+		 response.setCompanyId(job.getCompanyId());
+		 response.setJobStatus(job.getJobStatus());
 		 
 		 return response; 
 		 }
@@ -128,17 +128,16 @@ public class JobServiceImpl implements JobService {
 		
 		JobResponseDTO dto = new JobResponseDTO();
 		
-		dto.setJob_id(job.getJob_id());
-		dto.setJob_title(job.getJob_title());
+		dto.setJobId(job.getJobId());
+		dto.setJobTitle(job.getJobTitle());
 		dto.setDescription(job.getDescription());
 		dto.setLocation(job.getLocation());
 		dto.setExperience(job.getExperience());
 		dto.setSalary(job.getSalary());
-		
-		dto.setRequired_skills(job.getRequired_skills());
-		dto.setPosted_date(job.getPosted_date());
-		dto.setCompany_id(job.getCompanyId());
-		dto.setJob_status(job.getJob_status());
+		dto.setRequiredSkills(job.getRequiredSkills());
+		dto.setPostedDate(job.getPostedDate());
+		dto.setCompanyId(job.getCompanyId());
+		dto.setJobStatus(job.getJobStatus());
 		
 		return Optional.ofNullable(dto);
 		
@@ -155,8 +154,8 @@ public class JobServiceImpl implements JobService {
 		Job job = jobRepository.findById(jobId)
 				.orElseThrow(()-> new JobNotFoundException("Job not found with jobId : "+jobId));
 		
-		if(request.getJob_title() != null) {
-			job.setJob_title(request.getJob_title());
+		if(request.getJobTitle() != null) {
+			job.setJobTitle(request.getJobTitle());
 		}
 		
 		if(request.getDescriprtion() != null) {
@@ -175,16 +174,16 @@ public class JobServiceImpl implements JobService {
 			job.setSalary(request.getSalary());
 			}
 		
-		if(request.getJob_type() != null) {
-			job.setJob_type(request.getJob_type());	
+		if(request.getJobType() != null) {
+			job.setJobType(request.getJobType());	
 			}
 		
-		if(request.getRequired_skills() != null) {
-			job.setRequired_skills(request.getRequired_skills());
+		if(request.getRequiredSkills() != null) {
+			job.setRequiredSkills(request.getRequiredSkills());
 			}
 		
-		if(request.getJob_status() != null) {
-			job.setJob_status(request.getJob_status());
+		if(request.getJobStatus() != null) {
+			job.setJobStatus(request.getJobStatus());
 		}
 		
 		Job updateJob = jobRepository.save(job);
@@ -197,15 +196,15 @@ public class JobServiceImpl implements JobService {
 		
 		JobResponseDTO dto = new JobResponseDTO();
 		
-		dto.setJob_id(updateJob.getJob_id());
-		dto.setJob_title(updateJob.getJob_title());
+		dto.setJobId(updateJob.getJobId());
+		dto.setJobTitle(updateJob.getJobTitle());
 		dto.setDescription(updateJob.getDescription());
 		dto.setLocation(updateJob.getLocation());
 		dto.setExperience(updateJob.getExperience());
 		dto.setSalary(updateJob.getSalary());
-		dto.setJob_type(updateJob.getJob_type());
-		dto.setRequired_skills(updateJob.getRequired_skills());
-		dto.setJob_status(updateJob.getJob_status());		
+		dto.setJobType(updateJob.getJobType());
+		dto.setRequiredSkills(updateJob.getRequiredSkills());
+		dto.setJobStatus(updateJob.getJobStatus());		
 		
 		return dto;
 	}

@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping("/jobs")
+@RequestMapping("/api/jobs")
 public class JobController {
 	
 	@Autowired
@@ -32,7 +32,7 @@ public class JobController {
 	@PostMapping
 	public ResponseEntity<JobResponseDTO> createJob(@RequestBody JobRequestDTO request){
 		
-		log.info("Received request to create job: {}", request.getJob_title());
+		log.info("Received request to create job: {}", request.getJobTitle());
 		
 		JobResponseDTO response = jobService.createJob(request);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
