@@ -2,6 +2,7 @@ package com.icodian.careervia.job.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,8 +11,11 @@ import org.springframework.web.client.RestTemplate;
 import com.icodian.careervia.job.dto.ApplicationRequestDTO;
 import com.icodian.careervia.job.dto.ApplicationResponseDTO;
 import com.icodian.careervia.job.dto.ApplicationStatusResponseDTO;
+import com.icodian.careervia.job.dto.ApplicationStatusUpdateRequestDTO;
+import com.icodian.careervia.job.dto.ApplicationStatusUpdateResponseDTO;
 import com.icodian.careervia.job.dto.ApplicationUpdateRequestDTO;
 import com.icodian.careervia.job.dto.ApplicationUpdateResponseDTO;
+import com.icodian.careervia.job.dto.JobApplicantListResponseDTO;
 import com.icodian.careervia.job.dto.JobApplicationResponseDTO;
 import com.icodian.careervia.job.dto.UserApplicationResponseDTO;
 import com.icodian.careervia.job.entity.Application;
@@ -212,6 +216,93 @@ public class ApplicationServiceImpl implements ApplicationService {
 		response.setMessage("Application withdrawn successfully");
 		
 		return response;
+	}
+
+	@Override
+	public List<JobApplicantListResponseDTO> getApplicationByJobIdAndStatus(Long jobId,
+			ApplicationStatus applicationStatus) {
+		// TODO Auto-generated method stub
+		
+		List<Application> applications = applicationRepository.findByJobId(jobId);
+		
+		if(applications == null) {
+			throw new ApplicationNotFoundException("Application not found with the job ID: "+jobId);
+			}
+		
+		List<Application> filterApplications = applications.stream()
+				.filter(app-> app.getApplicationStatus().equals(applicationStatus))
+				.collect(Collectors.toList());
+		
+		if(filterApplications.isEmpty()) {
+			throw new ApplicationNotFoundException("Application not found with the application status as: "+ applicationStatus);
+		}
+		
+		List<JobApplicantListResponseDTO> response = new ArrayList<>();
+		
+		for(Application application : filterApplications) {
+			
+			JobApplicantListResponseDTO dto = new JobApplicantListResponseDTO();
+			
+			User user = restTemplate.getForObject("http://USER-MICROSERVICE/api/users/" + application.getUserId(),
+					User.class);
+
+			dto.setApplicationId(application.getApplicationId());
+			dto.setApplicationstatus(application.getApplicationStatus());
+			dto.setAppliedDate(application.getAppliedDate());
+			dto.setEmail(application.getJobTitle());
+			dto.setJobId(application.getJobId());
+			dto.setUserId(application.getUserId());
+			dto.setFullName(user.getFullName());
+			
+			response.add(dto);
+					
+			}
+		
+			
+		return response;
+	}
+
+	@Override
+	public ApplicationStatusUpdateResponseDTO updateApplicationStatus(Long applicationId,
+			ApplicationStatusUpdateRequestDTO request) {
+		// TODO Auto-generated method stub
+		
+		if(request == null) {
+			throw new InvalidApplicationStatusException("Application status is not send for updation.");
+		}
+		
+		Application application = applicationRepository.findById(applicationId)
+				.orElseThrow(()-> new ApplicationNotFoundException("Application not found having application ID: "+ applicationId));
+		
+		if(application.getApplicationStatus()==ApplicationStatus.WITHDRAW) {
+			throw new InvalidApplicationStatusException("Application has already been withdrawn.");
+		}
+		
+		if(application.getApplicationStatus() != null ) {
+			application.setApplicationStatus(request.getApplicationStatus());
+		}
+		
+		if(application.getRemarks() != null) {
+			application.setRemarks(request.getRemarks());		
+		}
+		
+		Application updateApplicationStatus = applicationRepository.save(application);
+		
+		
+		return mapToUpdateStatus(updateApplicationStatus);
+	}
+
+	private ApplicationStatusUpdateResponseDTO mapToUpdateStatus(Application updateApplicationStatus) {
+		// TODO Auto-generated method stub
+		
+		
+		ApplicationStatusUpdateResponseDTO dto = new ApplicationStatusUpdateResponseDTO();
+				
+		dto.setApplicationId(updateApplicationStatus.getApplicationId());
+		dto.setApplicationStatus(updateApplicationStatus.getApplicationStatus());
+		dto.setRemarks(updateApplicationStatus.getRemarks());
+		
+		return dto;
 	}
 
 }

@@ -17,10 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.icodian.careervia.job.dto.ApplicationRequestDTO;
 import com.icodian.careervia.job.dto.ApplicationResponseDTO;
 import com.icodian.careervia.job.dto.ApplicationStatusResponseDTO;
+import com.icodian.careervia.job.dto.ApplicationStatusUpdateRequestDTO;
+import com.icodian.careervia.job.dto.ApplicationStatusUpdateResponseDTO;
 import com.icodian.careervia.job.dto.ApplicationUpdateRequestDTO;
 import com.icodian.careervia.job.dto.ApplicationUpdateResponseDTO;
+import com.icodian.careervia.job.dto.JobApplicantListResponseDTO;
 import com.icodian.careervia.job.dto.JobApplicationResponseDTO;
 import com.icodian.careervia.job.dto.UserApplicationResponseDTO;
+import com.icodian.careervia.job.entity.constant.ApplicationStatus;
 import com.icodian.careervia.job.service.ApplicationService;
 
 @RestController
@@ -70,8 +74,22 @@ public class ApplicationController {
 		
 	}
 	
+	@GetMapping("/jobs/{jobId}/applications")
+	public List<JobApplicantListResponseDTO> getApplicationByJobIdAndStatus(@PathVariable ("jobId") Long jobId,
+			@RequestParam ApplicationStatus applicationStatus) {
+		
+		return applicationService.getApplicationByJobIdAndStatus(jobId, applicationStatus);
+	}
 	
-	
+	@PatchMapping("/applications/{applicationId}")
+	public ResponseEntity<ApplicationStatusUpdateResponseDTO> updateApplicationStatus(@PathVariable ("applicationId") Long applicationId,
+			@RequestBody ApplicationStatusUpdateRequestDTO request) {
+		
+		ApplicationStatusUpdateResponseDTO response = applicationService.updateApplicationStatus(applicationId, request);
+		
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+		
+	}
 
 }
 
