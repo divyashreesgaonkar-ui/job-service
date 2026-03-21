@@ -1,5 +1,6 @@
 package com.icodian.careervia.job.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,8 +11,10 @@ import org.springframework.web.client.RestTemplate;
 
 import com.icodian.careervia.job.dto.JobRequestDTO;
 import com.icodian.careervia.job.dto.JobResponseDTO;
+import com.icodian.careervia.job.dto.JobSearchResponseDTO;
 import com.icodian.careervia.job.entity.Company;
 import com.icodian.careervia.job.entity.Job;
+import com.icodian.careervia.job.entity.constant.JobType;
 import com.icodian.careervia.job.exceptions.InvalidJobDataException;
 import com.icodian.careervia.job.exceptions.JobNotFoundException;
 import com.icodian.careervia.job.repository.JobRepository;
@@ -220,6 +223,71 @@ public class JobServiceImpl implements JobService {
 		jobRepository.deleteById(job_id);
 		
 		return "Job has been deleted";
+	}
+
+	@Override
+	public List<JobSearchResponseDTO> searchJobs(String jobTitle, String location, JobType jobType) {
+		// TODO Auto-generated method stub
+		
+		List<Job> jobs = new ArrayList<>();
+		
+		if(jobTitle != null && location != null && jobType != null) {
+			jobs = jobRepository.findByJobTitleAndLocationAndJobType(jobTitle, location, jobType);
+		}
+		
+		else if(jobTitle != null && location == null && jobType == null) {
+			jobs = jobRepository.findByJobTitle(jobTitle);
+		}
+		
+		else if(jobTitle == null && location != null && jobType == null) {
+			jobs = jobRepository.findByLocation(location);
+		}
+		
+		else if(jobTitle == null && location == null && jobType != null) {
+			jobs = jobRepository.findByJobType(jobType);
+		}
+		
+		else if(jobTitle != null && location != null && jobType == null) {
+			jobs = jobRepository.findByJobTitleAndLocation(jobTitle, location);
+		}
+		
+		else if(jobTitle != null && location == null && jobType != null) {
+			jobs = jobRepository.findByJobTitleAndJobType(jobTitle, jobType);
+		}
+		
+		else if(jobTitle == null && location != null && jobType != null) {
+			jobs = jobRepository.findByLocationAndJobType(location, jobType);
+		}
+		
+		else {
+			jobs = jobRepository.findAll();
+		}
+		
+		if(jobs.isEmpty()) {
+			throw new JobNotFoundException("No Jobs found based on the filters.");
+		}
+		
+		List<JobSearchResponseDTO> response = new ArrayList<>();
+		
+		for(Job job : jobs) {
+			
+			JobSearchResponseDTO dto = new JobSearchResponseDTO();
+			
+			dto.setJobId(job.getJobId());
+			dto.setCompanyId(job.getCompanyId());
+			dto.setExperience(job.getExperience());
+			dto.setJobStatus(job.getJobStatus());
+			dto.setJobTitle(job.getJobTitle());
+			dto.setJobType(job.getJobType());
+			dto.setLocation(job.getLocation());
+			dto.setPostedDate(job.getPostedDate());
+			dto.setRequiredSkills(job.getRequiredSkills());
+			dto.setSalary(job.getSalary());
+			
+			response.add(dto);
+		}
+		
+		return response;
 	}
 	
 	

@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import com.icodian.careervia.job.dto.JobRequestDTO;
 import com.icodian.careervia.job.dto.JobResponseDTO;
+import com.icodian.careervia.job.dto.JobSearchResponseDTO;
+import com.icodian.careervia.job.entity.constant.JobType;
 
 public interface JobService {
 	
@@ -17,6 +19,10 @@ public interface JobService {
 	JobResponseDTO updateJob(Long jobId, JobRequestDTO request);
 
 	String deleteJob(Long jobId);
+
+	List<JobSearchResponseDTO> searchJobs(String jobTitle, String location, JobType jobType);
 	
 
 }
+
+

@@ -12,10 +12,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.icodian.careervia.job.dto.JobRequestDTO;
 import com.icodian.careervia.job.dto.JobResponseDTO;
+import com.icodian.careervia.job.dto.JobSearchResponseDTO;
+import com.icodian.careervia.job.entity.constant.JobType;
 import com.icodian.careervia.job.exceptions.JobNotFoundException;
 import com.icodian.careervia.job.service.JobService;
 
@@ -70,7 +73,14 @@ public class JobController {
 		return ResponseEntity.ok(response);
 	}
 	
-	
-	
+	@GetMapping("/jobs/search")
+	public List<JobSearchResponseDTO> searchJobs(
+			@RequestParam String jobTitle,
+			@RequestParam String location,
+			@RequestParam JobType jobType) {
+		
+		return jobService.searchJobs(jobTitle, location, jobType);
+	}
 
 }
+
