@@ -2,86 +2,76 @@ package com.icodian.careervia.job.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import com.icodian.careervia.job.dto.JobDetailResponseDTO;
-import com.icodian.careervia.job.dto.JobListResponseDTO;
 import com.icodian.careervia.job.dto.JobRequestDTO;
 import com.icodian.careervia.job.dto.JobResponseDTO;
-import com.icodian.careervia.job.dto.UpdateJobRequestDTO;
+import com.icodian.careervia.job.dto.JobSearchResponseDTO;
+import com.icodian.careervia.job.entity.Company;
 import com.icodian.careervia.job.entity.Job;
-import com.icodian.careervia.job.entity.constant.ApprovalStatus;
-import com.icodian.careervia.job.entity.constant.JobStatus;
-import com.icodian.careervia.job.entity.constant.UserRole;
+import com.icodian.careervia.job.entity.constant.JobType;
 import com.icodian.careervia.job.exceptions.InvalidJobDataException;
-import com.icodian.careervia.job.exceptions.JobAlreadyClosedException;
 import com.icodian.careervia.job.exceptions.JobNotFoundException;
-import com.icodian.careervia.job.exceptions.JobNotUpdatableException;
-import com.icodian.careervia.job.exceptions.UnauthorizedAccessException;
 import com.icodian.careervia.job.repository.JobRepository;
 import com.icodian.careervia.job.service.JobService;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class JobServiceImpl implements JobService {
 
 	@Autowired
-	private final JobRepository jobRepository;
-	
-	// Statuses restricted for Job Seekers
-		private static final List<JobStatus> RESTRICTED_STATUSES = List.of(
-			    JobStatus.CLOSED,
-			    JobStatus.DISABLED,
-			    JobStatus.EXPIRED
-			);
-	
-	// Statuses that completely block updates
-/*	private static final List<JobStatus> NON_UPDATABLE_STATUSES = List.of(
-		    JobStatus.CLOSED,
-		    JobStatus.EXPIRED,
-		    JobStatus.DISABLED
-		);
-*/
-		
-		// Critical fields that require Admin reapproval if changed
-		private static final String CRITICAL_FIELD_SALARY     = "Salary";
-		private static final String CRITICAL_FIELD_EXPERIENCE = "Experience Level";
-		private static final String CRITICAL_FIELD_JOB_TYPE   = "Job Type";
-		private static final String CRITICAL_FIELD_TITLE      = "Job Title";
+	private JobRepository jobRepository;
+
+	@Autowired
+	private RestTemplate restTemplate;
 
 	@Override
 	public JobResponseDTO createJob(JobRequestDTO request) {
 		// TODO Auto-generated method stub
 
-		log.info("Creating job with title: {}", request.getJob_title());
+//		log.info("Creating job with title: {} for company ID: {}", request.getJob_title(), request.getCompany_id());
 
 //		Validate the salary if it is null and throw an exception
-		if (request.getSalary() == null) {
-			throw new InvalidJobDataException("Salary is required");
+		if (request == null) {
+			throw new InvalidJobDataException("Job is required");
+		}
+
+//		Validate Company exists by calling Company Service
+//		CompanyResponseDTO company = companyClient.getCompanyById(request.getCompany_id());
+//		log.info("Company validated: {})", company.getCompanyId());
+
+//		company.setCompanyId(request.getCompany_id());
+
+		Company company_info = restTemplate
+				.getForObject("http://COMPANY-MICROSERVICE/api/companies/" + request.getCompanyId(), Company.class);
+		if (company_info == null) {
+			throw new RuntimeException("Company not found");
+
 		}
 
 //		Creating the job entity
 		Job job = new Job();
-		job.setJob_title(request.getJob_title());
+
+		job.setJobTitle(request.getJobTitle());
 		job.setDescription(request.getDescriprtion());
 		job.setLocation(request.getLocation());
 		job.setExperience(request.getExperience());
 		job.setSalary(request.getSalary());
-		job.setJob_type(request.getJob_type());
-		job.setSkills(request.getRequired_skills());
-		job.setPosted_date(request.getPosted_date());
-		job.setCompany_id(request.getCompany_id());
-		job.setJob_status(request.getJob_status());
+		job.setJobType(request.getJobType());
+		job.setRequiredSkills(request.getRequiredSkills());
+		job.setPostedDate(request.getPostedDate());
+		job.setCompanyId(request.getCompanyId());
+		job.setJobStatus(request.getJobStatus());
 
 		Job savedJob = jobRepository.save(job);
-		log.info("Job created successfully with job ID", savedJob.getJob_id());
+		log.info("Job created successfully with job ID: {} ", savedJob.getJobId());
 
 		return mapToResponse(savedJob);
 	}
@@ -90,256 +80,229 @@ public class JobServiceImpl implements JobService {
 		// TODO Auto-generated method stub
 
 		JobResponseDTO response = new JobResponseDTO();
-		response.setJob_id(job.getJob_id());
-		response.setJob_title(job.getJob_title());
+		response.setJobId(job.getJobId());
+		response.setJobTitle(job.getJobTitle());
 		response.setDescription(job.getDescription());
 		response.setLocation(job.getLocation());
 		response.setExperience(job.getExperience());
 		response.setSalary(job.getSalary());
-		response.setJob_type(job.getJob_type());
-		response.setRequired_skills(job.getSkills());
-		response.setPosted_date(job.getPosted_date());
-		response.setCompany_id(job.getCompany_id());
-		response.setJob_status(job.getJob_status());
+		response.setJobType(job.getJobType());
+		response.setRequiredSkills(job.getRequiredSkills());
+		response.setPostedDate(job.getPostedDate());
+		response.setCompanyId(job.getCompanyId());
+		response.setJobStatus(job.getJobStatus());
 
 		return response;
 	}
 
 	@Override
-	public List<JobListResponseDTO> getAlljobs(UserRole userRole, JobStatus status) {
+	public List<JobResponseDTO> getAllJobs() {
 		// TODO Auto-generated method stub
-		log.info("Fetching jobs for role: {} with filters - status: {}", 
-                userRole, status);
-		
-//		Job Seekers can only see ACTIVE jobs
-		if(userRole == UserRole.JOB_SEEKER) {
-			if(status != null && status != JobStatus.OPENED) {
-				throw new UnauthorizedAccessException("Job seekers can only view active jobs");
-			}
-			status = JobStatus.OPENED;
-		}
-		
-//		Fetch jobs based on filters
-		List<Job> jobs = jobRepository.findJobsByFilters(status);
-		
-		log.info("Found {} jobs matching the criteria", jobs.size());
-		
-		return jobs.stream()
+		return jobRepository.findAll()
+				.stream()
 				.map(this::mapToListResponse)
 				.collect(Collectors.toList());
-		
-				
 	}
 	
-	private JobListResponseDTO mapToListResponse(Job job) {
-		
-		JobListResponseDTO response = new JobListResponseDTO();
-		
-		response.setJob_id(job.getJob_id());
-		response.setJob_title(job.getJob_title());
-		response.setLocation(job.getLocation());
-		response.setExperience(job.getExperience());
-		response.setSalary(job.getSalary());
-		response.setJob_type(job.getJob_type());
-		response.setRequired_skills(job.getSkills());
-		response.setPosted_date(job.getPosted_date());
-		response.setCompany_id(job.getCompany_id());
-		response.setJob_status(job.getJob_status());	
-		
-		return response;
-	}
-	
-	
+	private JobResponseDTO mapToListResponse(Job job) {
+		 
+		  JobResponseDTO response = new JobResponseDTO();
+		 
+		 response.setJobId(job.getJobId());
+		 response.setJobTitle(job.getJobTitle());
+		 response.setDescription(job.getDescription());
+		 response.setLocation(job.getLocation());
+		 response.setExperience(job.getExperience());
+		 response.setSalary(job.getSalary()); 
+		 response.setJobType(job.getJobType());
+		 response.setRequiredSkills(job.getRequiredSkills());
+		 response.setPostedDate(job.getPostedDate());
+		 response.setCompanyId(job.getCompanyId());
+		 response.setJobStatus(job.getJobStatus());
+		 
+		 return response; 
+		 }
 
 	@Override
-	public JobDetailResponseDTO getJobById(Long job_id, UserRole userRole) {
+	public Optional<JobResponseDTO> getJobById(Long jobId) {
 		// TODO Auto-generated method stub
 		
-		log.info("Fetching job details for Job ID: {} by role: {}", job_id, userRole);
+		Job job = jobRepository.findById(jobId)
+				.orElseThrow(()-> new JobNotFoundException("Job not found with id: "+ jobId));
 		
-//		Check if job exist
-		Job job = jobRepository.findById(job_id)
-	            .orElseThrow(() -> new JobNotFoundException(
-	                "Job not found with ID: " + job_id));
+		JobResponseDTO dto = new JobResponseDTO();
 		
-//		Check Role based access
-		if (userRole == UserRole.JOB_SEEKER &&
-	            RESTRICTED_STATUSES.contains(job.getJob_status())) {
-	        log.warn("Job Seeker tried to access restricted job ID: {} with status: {}",
-	                 job_id, job.getJob_status());
-	        throw new JobAlreadyClosedException(
-	            "This job is no longer accessible. " +
-	            "Job status is: " + job.getJob_status());
-	    }
+		dto.setJobId(job.getJobId());
+		dto.setJobTitle(job.getJobTitle());
+		dto.setDescription(job.getDescription());
+		dto.setLocation(job.getLocation());
+		dto.setExperience(job.getExperience());
+		dto.setSalary(job.getSalary());
+		dto.setRequiredSkills(job.getRequiredSkills());
+		dto.setPostedDate(job.getPostedDate());
+		dto.setCompanyId(job.getCompanyId());
+		dto.setJobStatus(job.getJobStatus());
 		
-		log.info("Job details fetched successfully for Job ID: {}", job_id);
-		
-		
-		return mapToJobDetailResponse(job);
-	}
-	
-	private JobDetailResponseDTO mapToJobDetailResponse(Job job) {
-		
-		JobDetailResponseDTO response = new JobDetailResponseDTO();
-		
-		response.setJob_id(job.getJob_id());
-		response.setJob_title(job.getJob_title());
-		response.setPosted_date(job.getPosted_date());
-		response.setJob_status(job.getJob_status());
-		response.setDescription(job.getDescription());
-		response.setRequired_skills(job.getSkills());
-		response.setExperience(job.getExperience());
-		response.setLocation(job.getLocation());
-		response.setSalary(job.getSalary());
-		response.setJob_type(job.getJob_type());
-		response.setCompany_id(job.getCompany_id());
-		
-		return response;
+		return Optional.ofNullable(dto);
 		
 	}
 
 	@Override
-	public JobResponseDTO updateJob(Long job_id, UpdateJobRequestDTO request) {
+	public JobResponseDTO updateJob(Long jobId, JobRequestDTO request) {
 		// TODO Auto-generated method stub
-		log.info("HR requested update for Job ID: {}", job_id);
 		
-//		Check if job exists
-		Job job = jobRepository.findById(job_id)
-	            .orElseThrow(() -> new JobNotFoundException(
-	                "Job not found with ID: " + job_id));
+//		
 		
-//		Block update if job is CLOSED / EXPIRED / DISABLED
-		if (RESTRICTED_STATUSES.contains(job.getJob_status())) {
-	        log.warn("Update blocked for Job ID: {} — Status is: {}", job_id, job.getJob_status());
-	        throw new JobNotUpdatableException(
-	            "Job cannot be updated because its current status is: "
-	            + job.getJob_status()
-	            + ". Updates are only allowed for OPENED, DRAFT or ON_HOLD jobs.");
-	    }
-		
-		if(!(request.getSalary() != null)) {
-			throw new InvalidJobDataException(
-		            "Salary cannot be zero.");
+		if(request == null) {
+			throw new JobNotFoundException("Job is not present.");
 		}
 		
-//		Detect critical field changes — collect changed field names
-		List<String> changedCriticalFields = new ArrayList<>();
+		Job job = jobRepository.findById(jobId)
+				.orElseThrow(()-> new JobNotFoundException("Job not found with jobId : "+jobId));
 		
-		if (request.getJob_title() != null
-	            && !request.getJob_title().equals(job.getJob_title())) {
-	        changedCriticalFields.add(CRITICAL_FIELD_TITLE);
-	    }
+		if(request.getJobTitle() != null) {
+			job.setJobTitle(request.getJobTitle());
+		}
+		
+		if(request.getDescriprtion() != null) {
+			job.setDescription(request.getDescriprtion());
+		}
+		
+		if(request.getLocation() != null) {
+			job.setLocation(request.getLocation());
+			}
+		
+		if(request.getExperience() != null) {
+			job.setExperience(request.getExperience());	
+			}
 
-	    if (request.getExperience() != null
-	            && !request.getExperience().equals(job.getExperience())) {
-	        changedCriticalFields.add(CRITICAL_FIELD_EXPERIENCE);
-	    }
-
-	    if (request.getJob_type() != null
-	            && !request.getJob_type().equals(job.getJob_type())) {
-	        changedCriticalFields.add(CRITICAL_FIELD_JOB_TYPE);
-	    }
-	    
-	    boolean salaryChanged =
-	            (request.getSalary() != null
-	                && !request.getSalary().equals(job.getSalary()));
-	    
-	    if (salaryChanged) {
-	        changedCriticalFields.add(CRITICAL_FIELD_SALARY);
-	    }
-	    
-//	    Apply non-critical field updates directly
-	    
-	    if (request.getDescription() != null) {
-	        job.setDescription(request.getDescription());
-	    }
-	    
-	    if (request.getLocation() != null) {
-	        job.setLocation(request.getLocation());
-	    }
-	    
-	    if (request.getRequired_skills() != null) {
-	        job.setSkills(request.getRequired_skills());
-	    }
-	    
-	    if (request.getJob_status() != null) {
-	        job.setJob_status(request.getJob_status());
-	    }
-	    
-//	    Apply critical field updates & flag for re-approval if changed
-	    String responseMessage;
-	    
-	    if (!changedCriticalFields.isEmpty()) {
-	    	
-	    	// Apply the critical field changes
-	        if (request.getJob_title() != null) {
-	            job.setJob_title(request.getJob_title());
-	        }
-	        if (request.getExperience() != null) {
-	            job.setExperience(request.getExperience());
-	        }
-	        if (request.getJob_type() != null) {
-	            job.setJob_type(request.getJob_type());
-	        }
-	        if (request.getSalary() != null) {
-	            job.setSalary(request.getSalary());
-	        }
-	        
-//	        Flag job as PENDING_APPROVAL for Admin review
-	        
-	        job.setApprovalStatus(ApprovalStatus.PENDING_APPROVAL);
-	        job.setPendingChangesSummary(
-	            "Critical fields changed by HR: [" +
-	            String.join(", ", changedCriticalFields) + "]" +
-	            " — Awaiting Admin reapproval.");
-
-	        responseMessage =
-	            "Job updated successfully. However, the following critical fields " +
-	            "were changed: [" + String.join(", ", changedCriticalFields) + "]. " +
-	            "Admin reapproval is required before these changes take effect publicly.";
-
-	        log.info("Job ID: {} flagged for Admin reapproval. Changed fields: {}",
-	                 job_id, changedCriticalFields);
-
-	    }else {
-	    	// No critical fields changed — no re-approval needed
-	        job.setApprovalStatus(ApprovalStatus.APPROVED);
-	        job.setPendingChangesSummary(null);
-
-	        responseMessage = "Job updated successfully. No reapproval required.";
-	        log.info("Job ID: {} updated successfully without reapproval.", job_id);
-	        	    	
-	    }
-	    
-//	    Save updated job
-	    
-	    Job updatedJob = jobRepository.save(job);
-	    
-	    return mapToJobResponseDTO(updatedJob, responseMessage);
-	    
+		if(request.getSalary() != null) {
+			job.setSalary(request.getSalary());
+			}
+		
+		if(request.getJobType() != null) {
+			job.setJobType(request.getJobType());	
+			}
+		
+		if(request.getRequiredSkills() != null) {
+			job.setRequiredSkills(request.getRequiredSkills());
+			}
+		
+		if(request.getJobStatus() != null) {
+			job.setJobStatus(request.getJobStatus());
+		}
+		
+		Job updateJob = jobRepository.save(job);
+		
+		return mapToUpdateResponse(updateJob);
 	}
-	
-//	Mapper
-	
-	private JobResponseDTO mapToJobResponseDTO(Job job, String message) {
-	    JobResponseDTO response = new JobResponseDTO();
-	    response.setJob_id(job.getJob_id());
-	    response.setJob_title(job.getJob_title());
-	    response.setDescription(job.getDescription());
-	    response.setLocation(job.getLocation());
-	    response.setExperience(job.getExperience());
-	    response.setSalary(job.getSalary());
-	    response.setJob_type(job.getJob_type());
-	    response.setRequired_skills(job.getSkills());
-	    response.setJob_status(job.getJob_status());
-	    response.setMessage(message);
-	    return response;
+
+	private JobResponseDTO mapToUpdateResponse(Job updateJob) {
+		// TODO Auto-generated method stub
+		
+		JobResponseDTO dto = new JobResponseDTO();
+		
+		dto.setJobId(updateJob.getJobId());
+		dto.setJobTitle(updateJob.getJobTitle());
+		dto.setDescription(updateJob.getDescription());
+		dto.setLocation(updateJob.getLocation());
+		dto.setExperience(updateJob.getExperience());
+		dto.setSalary(updateJob.getSalary());
+		dto.setJobType(updateJob.getJobType());
+		dto.setRequiredSkills(updateJob.getRequiredSkills());
+		dto.setJobStatus(updateJob.getJobStatus());		
+		
+		return dto;
 	}
 
 	@Override
-	public boolean isJobExists(Long job_id) {
+	public String deleteJob(Long job_id) {
 		// TODO Auto-generated method stub
-		return jobRepository.existsById(job_id);
+		
+//		If job is empty
+		
+		
+		
+		if(job_id == null) {
+			throw new InvalidJobDataException("Please add your job ID. Job Id is empty.");
+		}
+		
+		jobRepository.deleteById(job_id);
+		
+		return "Job has been deleted";
 	}
+
+	@Override
+	public List<JobSearchResponseDTO> searchJobs(String jobTitle, String location, JobType jobType, Integer experience, Double salary) {
+		// TODO Auto-generated method stub
+		
+		List<Job> jobs = new ArrayList<>();
+		
+		if(jobTitle != null && location != null && jobType != null) {
+			jobs = jobRepository.findByJobTitleAndLocationAndJobType(jobTitle, location, jobType);
+		}
+		
+		else if(jobTitle != null && location == null && jobType == null) {
+			jobs = jobRepository.findByJobTitle(jobTitle);
+		}
+		
+		else if(jobTitle == null && location != null && jobType == null) {
+			jobs = jobRepository.findByLocation(location);
+		}
+		
+		else if(jobTitle == null && location == null && jobType != null) {
+			jobs = jobRepository.findByJobType(jobType);
+		}
+		
+		else if(jobTitle != null && location != null && jobType == null) {
+			jobs = jobRepository.findByJobTitleAndLocation(jobTitle, location);
+		}
+		
+		else if(jobTitle != null && location == null && jobType != null) {
+			jobs = jobRepository.findByJobTitleAndJobType(jobTitle, jobType);
+		}
+		
+		else if(jobTitle == null && location != null && jobType != null) {
+			jobs = jobRepository.findByLocationAndJobType(location, jobType);
+		}
+		
+		else {
+			jobs = jobRepository.findAll();
+		}
+		
+		List<Job> filterJobs = jobs.stream()
+				.filter(job -> (experience == null || (job.getExperience()-10000 <= experience && job.getExperience()+10000 >= experience)))
+				.filter(job -> (salary == null || (job.getSalary()-1 <= salary && job.getSalary()+1 >= salary)))
+				.collect(Collectors.toList());
+		
+		if(filterJobs.isEmpty()) {
+			throw new JobNotFoundException("No Jobs found based on the filters.");
+		}
+		
+		List<JobSearchResponseDTO> response = new ArrayList<>();
+		
+		for(Job job : filterJobs) {
+			
+			JobSearchResponseDTO dto = new JobSearchResponseDTO();
+			
+			dto.setJobId(job.getJobId());
+			dto.setCompanyId(job.getCompanyId());
+			dto.setExperience(job.getExperience());
+			dto.setJobStatus(job.getJobStatus());
+			dto.setJobTitle(job.getJobTitle());
+			dto.setJobType(job.getJobType());
+			dto.setLocation(job.getLocation());
+			dto.setPostedDate(job.getPostedDate());
+			dto.setRequiredSkills(job.getRequiredSkills());
+			dto.setSalary(job.getSalary());
+			
+			response.add(dto);
+		}
+		
+		return response;
+	}
+	
+	
+
 
 }

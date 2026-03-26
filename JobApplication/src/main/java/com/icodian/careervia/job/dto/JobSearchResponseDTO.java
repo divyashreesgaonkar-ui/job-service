@@ -1,32 +1,25 @@
 package com.icodian.careervia.job.dto;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.icodian.careervia.job.entity.constant.JobStatus;
 import com.icodian.careervia.job.entity.constant.JobType;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Data
-@Setter
-@Getter
-public class JobResponseDTO {
+public class JobSearchResponseDTO {
 	
 	private Long jobId;
 	private String jobTitle;
-	private String description;
-	private String location;
+	private LocalDate postedDate;
+	private JobStatus jobStatus;
+	private List<String> requiredSkills;
 	private Integer experience;
+	private String location;
 	private Double salary;
 	private JobType jobType;
-	List<String> requiredSkills = new ArrayList<>();
-	private LocalDate postedDate;
 	private Long companyId;
-	private JobStatus jobStatus;
-//	private String message;
-
+	
 }

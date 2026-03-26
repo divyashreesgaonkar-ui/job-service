@@ -1,25 +1,28 @@
 package com.icodian.careervia.job.service;
 
 import java.util.List;
+import java.util.Optional;
 
-import com.icodian.careervia.job.dto.JobDetailResponseDTO;
-import com.icodian.careervia.job.dto.JobListResponseDTO;
 import com.icodian.careervia.job.dto.JobRequestDTO;
 import com.icodian.careervia.job.dto.JobResponseDTO;
-import com.icodian.careervia.job.dto.UpdateJobRequestDTO;
-import com.icodian.careervia.job.entity.constant.JobStatus;
-import com.icodian.careervia.job.entity.constant.UserRole;
+import com.icodian.careervia.job.dto.JobSearchResponseDTO;
+import com.icodian.careervia.job.entity.constant.JobType;
 
 public interface JobService {
 	
 	JobResponseDTO createJob(JobRequestDTO request);
 	
-	List<JobListResponseDTO> getAlljobs(UserRole userRole, JobStatus job_status);
-	
-	JobDetailResponseDTO getJobById(Long job_id, UserRole userRole);
-	
-	JobResponseDTO updateJob(Long job_id, UpdateJobRequestDTO request);
+	List<JobResponseDTO> getAllJobs();
 
-	boolean isJobExists(Long job_id);
+	Optional<JobResponseDTO> getJobById(Long jobId);
+
+	JobResponseDTO updateJob(Long jobId, JobRequestDTO request);
+
+	String deleteJob(Long jobId);
+
+	List<JobSearchResponseDTO> searchJobs(String jobTitle, String location, JobType jobType, Integer experience, Double salary);
+	
 
 }
+
+

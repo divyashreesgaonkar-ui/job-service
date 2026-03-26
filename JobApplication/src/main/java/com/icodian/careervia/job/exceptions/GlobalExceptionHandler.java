@@ -150,5 +150,32 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(apiResponse, HttpStatus.FORBIDDEN);
 	}
 	
+	@ExceptionHandler(CompanyNotFoundException.class)
+	public ResponseEntity<ApiResponse> handleCompanyNotFoundException(CompanyNotFoundException ex)
+	{
+		String message = ex.getMessage();
+		
+		ApiResponse apiResponse = ApiResponse.builder()
+				.message(message)
+				.success(false)
+				.status(HttpStatus.NOT_FOUND)
+				.build();
+		
+		return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
+	}
 
+	@ExceptionHandler(ServiceCommunicationException.class)
+	public ResponseEntity<ApiResponse> handleServiceCommunicationException(ServiceCommunicationException ex)
+	{
+		String message = ex.getMessage();
+		
+		ApiResponse apiResponse = ApiResponse.builder()
+				.message(message)
+				.success(false)
+				.status(HttpStatus.SERVICE_UNAVAILABLE)
+				.build();
+		
+		return new ResponseEntity<>(apiResponse, HttpStatus.SERVICE_UNAVAILABLE);
+	}
+	
 }
