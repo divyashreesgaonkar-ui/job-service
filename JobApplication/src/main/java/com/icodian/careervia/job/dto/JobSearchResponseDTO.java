@@ -16,9 +16,9 @@ public class JobSearchResponseDTO {
 	private LocalDate postedDate;
 	private JobStatus jobStatus;
 	private List<String> requiredSkills;
-	private String experience;
+	private Integer experience;
 	private String location;
-	private String salary;
+	private Double salary;
 	private JobType jobType;
 	private Long companyId;
 	

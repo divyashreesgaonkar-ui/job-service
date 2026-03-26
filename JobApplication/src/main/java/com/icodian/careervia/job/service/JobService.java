@@ -20,7 +20,7 @@ public interface JobService {
 
 	String deleteJob(Long jobId);
 
-	List<JobSearchResponseDTO> searchJobs(String jobTitle, String location, JobType jobType);
+	List<JobSearchResponseDTO> searchJobs(String jobTitle, String location, JobType jobType, Integer experience, Double salary);
 	
 
 }

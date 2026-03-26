@@ -42,10 +42,10 @@ public class Job {
 	private String location;
 
 	@Column(name = "experience")
-	private String experience;
+	private Integer experience;	
 
 	@Column(name = "salary", length = 50)
-	private String salary;
+	private Double salary;	
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "job_type")

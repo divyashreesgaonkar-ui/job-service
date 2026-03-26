@@ -77,9 +77,11 @@ public class JobController {
 	public List<JobSearchResponseDTO> searchJobs(
 			@RequestParam String jobTitle,
 			@RequestParam String location,
-			@RequestParam JobType jobType) {
+			@RequestParam JobType jobType,
+			@RequestParam Integer experience,
+			@RequestParam Double salary) {
 		
-		return jobService.searchJobs(jobTitle, location, jobType);
+		return jobService.searchJobs(jobTitle, location, jobType,experience, salary);
 	}
 
 }

@@ -16,4 +16,5 @@ public class ApplicationRequestDTO {
 	private ApplicationStatus applicationStatus;
 	private String remarks;
 	
+	
 }

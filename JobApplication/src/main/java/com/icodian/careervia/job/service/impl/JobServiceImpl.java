@@ -113,7 +113,8 @@ public class JobServiceImpl implements JobService {
 		 response.setDescription(job.getDescription());
 		 response.setLocation(job.getLocation());
 		 response.setExperience(job.getExperience());
-		 response.setSalary(job.getSalary()); response.setJobType(job.getJobType());
+		 response.setSalary(job.getSalary()); 
+		 response.setJobType(job.getJobType());
 		 response.setRequiredSkills(job.getRequiredSkills());
 		 response.setPostedDate(job.getPostedDate());
 		 response.setCompanyId(job.getCompanyId());
@@ -149,6 +150,8 @@ public class JobServiceImpl implements JobService {
 	@Override
 	public JobResponseDTO updateJob(Long jobId, JobRequestDTO request) {
 		// TODO Auto-generated method stub
+		
+//		
 		
 		if(request == null) {
 			throw new JobNotFoundException("Job is not present.");
@@ -216,6 +219,10 @@ public class JobServiceImpl implements JobService {
 	public String deleteJob(Long job_id) {
 		// TODO Auto-generated method stub
 		
+//		If job is empty
+		
+		
+		
 		if(job_id == null) {
 			throw new InvalidJobDataException("Please add your job ID. Job Id is empty.");
 		}
@@ -226,7 +233,7 @@ public class JobServiceImpl implements JobService {
 	}
 
 	@Override
-	public List<JobSearchResponseDTO> searchJobs(String jobTitle, String location, JobType jobType) {
+	public List<JobSearchResponseDTO> searchJobs(String jobTitle, String location, JobType jobType, Integer experience, Double salary) {
 		// TODO Auto-generated method stub
 		
 		List<Job> jobs = new ArrayList<>();
@@ -263,13 +270,18 @@ public class JobServiceImpl implements JobService {
 			jobs = jobRepository.findAll();
 		}
 		
-		if(jobs.isEmpty()) {
+		List<Job> filterJobs = jobs.stream()
+				.filter(job -> (experience == null || (job.getExperience()-10000 <= experience && job.getExperience()+10000 >= experience)))
+				.filter(job -> (salary == null || (job.getSalary()-1 <= salary && job.getSalary()+1 >= salary)))
+				.collect(Collectors.toList());
+		
+		if(filterJobs.isEmpty()) {
 			throw new JobNotFoundException("No Jobs found based on the filters.");
 		}
 		
 		List<JobSearchResponseDTO> response = new ArrayList<>();
 		
-		for(Job job : jobs) {
+		for(Job job : filterJobs) {
 			
 			JobSearchResponseDTO dto = new JobSearchResponseDTO();
 			

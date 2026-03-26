@@ -66,6 +66,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 //		application.setResume_id(request.getResume_id());
 		application.setAppliedDate(request.getAppliedDate());
 		application.setApplicationStatus(request.getApplicationStatus());
+		application.setJobTitle(user_info.getFullName());
 
 		Application saveApplication = applicationRepository.save(application);
 

@@ -20,8 +20,8 @@ public class JobRequestDTO {
 	private String jobTitle;
 	private String descriprtion;
 	private String location;
-	private String experience;
-	private String salary;
+	private Integer experience;
+	private Double salary;
 	private JobType jobType;
 	List<String> requiredSkills = new ArrayList<>();
 	private LocalDate postedDate;
