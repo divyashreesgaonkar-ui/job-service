@@ -271,8 +271,8 @@ public class JobServiceImpl implements JobService {
 		}
 		
 		List<Job> filterJobs = jobs.stream()
-				.filter(job -> (experience == null || (job.getExperience()-10000 <= experience && job.getExperience()+10000 >= experience)))
-				.filter(job -> (salary == null || (job.getSalary()-1 <= salary && job.getSalary()+1 >= salary)))
+				.filter(job -> (experience == null || (job.getExperience()-1 <= experience && job.getExperience()+1 >= experience)))
+				.filter(job -> (salary == null || (job.getSalary()-10000 <= salary && job.getSalary()+10000 >= salary)))
 				.collect(Collectors.toList());
 		
 		if(filterJobs.isEmpty()) {
