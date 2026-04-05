@@ -15,6 +15,6 @@ public class JobApplicantListResponseDTO {
 	private Long userId;
 	private Long jobId;
 	private String fullName;
-	private String email;
+	private String jobTitle;
 
 }

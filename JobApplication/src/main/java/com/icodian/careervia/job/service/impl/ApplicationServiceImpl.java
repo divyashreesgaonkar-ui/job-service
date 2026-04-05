@@ -55,7 +55,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 		if (user_info == null) {
 			throw new RuntimeException("User not found");
 		}
-
+		
+		
 		Job job = jobRepository.findById(request.getJobId())
 				.orElseThrow(() -> new JobNotFoundException("Job not found with id: " + request.getJobId()));
 
@@ -66,7 +67,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 //		application.setResume_id(request.getResume_id());
 		application.setAppliedDate(request.getAppliedDate());
 		application.setApplicationStatus(request.getApplicationStatus());
-		application.setJobTitle(user_info.getFullName());
+		application.setJobTitle(job.getJobTitle());
 
 		Application saveApplication = applicationRepository.save(application);
 
@@ -250,8 +251,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 			dto.setApplicationId(application.getApplicationId());
 			dto.setApplicationstatus(application.getApplicationStatus());
 			dto.setAppliedDate(application.getAppliedDate());
-			dto.setEmail(application.getJobTitle());
 			dto.setJobId(application.getJobId());
+			dto.setJobTitle(application.getJobTitle());
 			dto.setUserId(application.getUserId());
 			dto.setFullName(user.getFullName());
 			
