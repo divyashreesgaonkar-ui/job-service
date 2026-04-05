@@ -1,0 +1,83 @@
+.container {
+  width: 100%;
+  max-width: 600px;
+  padding: 30px;
+  background-color: #290799;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(84, 42, 193, 0.1);
+  margin: 50px auto;
+  border: #7964d6 solid 2px;
+  box-shadow: 0 4px 12px rgba(176, 165, 203, 0.1);
+
+}
+
+body {
+  background: linear-gradient(to right, #130456, #441ead, #1b0481);
+
+}
+
+.mainheading {
+  text-align: center;   
+  font-weight: bold;    
+  font-size: 50px;
+  color: #ffffff;     
+}
+
+.highlight2 {
+  color: rgb(174, 83, 174);      
+}
+
+.highlight1 {
+  color: #fffdff;      
+}
+
+.paragraph {
+  text-align: center;   
+  font-weight: bold;    
+  font-size: 20px;  
+  color: #ffffff;   
+}
+
+.subheading {
+  text-align: center;   
+  font-weight: bold;    
+  font-size: 30px;  
+  color: #ffffff;   
+}
+
+.company-logo {
+  width: 80px;              
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: block;
+  margin: 0 auto;
+}
+
+.company-logo:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.formlabel {
+  color: #ffffff;
+  text-align: left;
+}
+
+.formchecklabel {
+  color: #ffffff;
+  text-align: left;
+}
+
+.formgroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+
+
+
+
