@@ -42,6 +42,21 @@ public class ApplicationController {
 		
 	}
 	
+	@GetMapping
+	public List<ApplicationResponseDTO> getAllApplications() {
+
+		return applicationService.getAllApplications();
+
+	}
+	
+	@GetMapping("/{applicationId}")
+	public List<ApplicationResponseDTO> getApplicationByApplicationId(
+			@PathVariable("applicationId") Long applicationId) {
+
+		return applicationService.getApplicationByApplicationId(applicationId);
+
+	}
+	
 	@GetMapping("/jobs/{jobId}")
 	public List<JobApplicationResponseDTO> getApplicationByJobId(@PathVariable ("jobId") Long jobId) {
 		
