@@ -1,0 +1,161 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background: linear-gradient(135deg, #020024, #090979, #000428);
+}
+.recruiter-container {
+  width: 100%;
+  max-width: 950px;
+  padding: 40px 50px;
+  border-radius: 25px;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+  color: white;
+  box-shadow:
+    0 0 15px rgba(0, 229, 255, 0.3),
+    0 0 40px rgba(0, 229, 255, 0.2),
+    0 0 80px rgba(0, 229, 255, 0.15);
+}
+
+.recruiter-title {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.recruiter-title h1 {
+  font-size: 34px;
+  font-weight: 700;
+}
+
+.recruiter-title span {
+  color: #b784ff;
+}
+
+.recruiter-title h2 {
+  margin-top: 5px;
+  font-size: 20px;
+}
+
+.recruiter-subtitle {
+  font-size: 14px;
+  color: #dcdcff;
+}
+
+.recruiter-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.recruiter-section-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: bold;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+label {
+  font-size: 13px;
+  color: #d7d7ff;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 11px;
+  margin-top: 5px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  border: none;
+  background: #e6e6e6;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  box-shadow: 0 0 6px #9f6bff;
+}
+
+.recruiter-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.recruiter-file-upload {
+  margin-top: 25px;
+}
+
+button {
+  background: linear-gradient(90deg, #22c1c3, #a855f7);
+  padding: 12px 35px;
+  border: none;
+  border-radius: 25px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 20px rgba(168, 85, 247, 0.5);
+}
+
+.recruiter-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.recruiter-footer p {
+  font-size: 14px;
+}
+
+.recruiter-footer a {
+  color: #22d3ee;
+  text-decoration: none;
+}
+
+.recruiter-footer a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .recruiter-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .recruiter-footer {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+.recruiter-logo {
+  width: 80px;
+  height: auto;
+  display: block;
+  margin: 0 auto 10px;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(29, 9, 139, 0.57);
+}
+
+.recruiter-text {
+  text-align: center;
+  margin-top: 20px;
+}

@@ -1,0 +1,73 @@
+.profile-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 45px;
+  width: 480px;
+  backdrop-filter: blur(10px);
+  transition: all 0.4s ease;
+}
+
+/* the main card */
+.profile-container {
+  min-height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo {
+  width: 120px;
+  height: auto;
+  max-width: 120px;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center; /* center horizontally */
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+/* Title spacing */
+.profile-card h2 {
+  margin-bottom: 10px;
+}
+
+/* Subtitle spacing */
+.profile-card p {
+  margin-bottom: 25px;
+}
+
+/* Form spacing */
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Row spacing */
+.row {
+  display: flex;
+  gap: 15px; /* 🔥 increased */
+}
+
+/* Inputs */
+input,
+select,
+textarea {
+  padding: 14px; /* 🔥 more padding */
+  border-radius: 12px;
+}
+
+/* Textarea bigger */
+textarea {
+  height: 110px;
+}
+
+/* Button spacing */
+.save-btn {
+  margin-top: 20px;
+  padding: 14px;
+}
