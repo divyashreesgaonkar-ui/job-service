@@ -142,6 +142,7 @@ public class JobServiceImpl implements JobService {
 		dto.setPostedDate(job.getPostedDate());
 		dto.setCompanyId(job.getCompanyId());
 		dto.setJobStatus(job.getJobStatus());
+		dto.setJobType(job.getJobType());
 		
 		return Optional.ofNullable(dto);
 		

@@ -2,6 +2,7 @@ package com.icodian.careervia.job.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +56,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 		if (user_info == null) {
 			throw new RuntimeException("User not found");
 		}
-
+		
+		
 		Job job = jobRepository.findById(request.getJobId())
 				.orElseThrow(() -> new JobNotFoundException("Job not found with id: " + request.getJobId()));
 
@@ -66,7 +68,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 //		application.setResume_id(request.getResume_id());
 		application.setAppliedDate(request.getAppliedDate());
 		application.setApplicationStatus(request.getApplicationStatus());
-		application.setJobTitle(user_info.getFullName());
+		application.setJobTitle(job.getJobTitle());
 
 		Application saveApplication = applicationRepository.save(application);
 
@@ -250,8 +252,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 			dto.setApplicationId(application.getApplicationId());
 			dto.setApplicationstatus(application.getApplicationStatus());
 			dto.setAppliedDate(application.getAppliedDate());
-			dto.setEmail(application.getJobTitle());
 			dto.setJobId(application.getJobId());
+			dto.setJobTitle(application.getJobTitle());
 			dto.setUserId(application.getUserId());
 			dto.setFullName(user.getFullName());
 			
@@ -304,6 +306,65 @@ public class ApplicationServiceImpl implements ApplicationService {
 		dto.setRemarks(updateApplicationStatus.getRemarks());
 		
 		return dto;
+	}
+
+	@Override
+	public List<ApplicationResponseDTO> getAllApplications() {
+		// TODO Auto-generated method stub
+		
+		List<Application> applications = applicationRepository.findAll();
+		
+		if (applications.isEmpty()) {
+			throw new ApplicationNotFoundException("No applications found.");
+		}	
+		
+		return applications.stream().map(app->mapToDTO(app)).collect(Collectors.toList());
+	}
+
+	private ApplicationResponseDTO mapToDTO(Application app) {
+		// TODO Auto-generated method stub
+		
+		ApplicationResponseDTO dto = new ApplicationResponseDTO();
+		
+		dto.setApplicationId(app.getApplicationId());
+		dto.setUserId(app.getUserId());
+		dto.setJobId(app.getJobId());
+		dto.setAppliedDate(app.getAppliedDate());
+		dto.setApplicationStatus(app.getApplicationStatus());
+		dto.setRemarks(app.getRemarks());
+		
+		return dto;
+	}
+
+	@Override
+	public List<ApplicationResponseDTO> getApplicationByApplicationId(Long applicationId) {
+		// TODO Auto-generated method stub
+//		    Optional<Application> applications = applicationRepository.findById(applicationId);
+		    
+		    List<Application> applications = applicationRepository.findByApplicationId(applicationId);
+		    
+			if (applications.isEmpty()) {
+				throw new ApplicationNotFoundException("No applications found.");
+			}
+			
+			List<ApplicationResponseDTO> response = new ArrayList<>();
+			
+			for (Application application : applications) {
+				
+				ApplicationResponseDTO dto = new ApplicationResponseDTO();
+
+				dto.setApplicationId(application.getApplicationId());
+				dto.setUserId(application.getUserId());
+				dto.setJobId(application.getJobId());
+				dto.setAppliedDate(application.getAppliedDate());
+				dto.setApplicationStatus(application.getApplicationStatus());
+				dto.setRemarks(application.getRemarks());
+
+				response.add(dto);
+				
+			}
+		    
+		return response;
 	}
 
 }
