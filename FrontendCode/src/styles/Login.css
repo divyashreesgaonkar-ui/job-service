@@ -1,0 +1,158 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 40px;
+  border-radius: 25px;
+  background: linear-gradient(135deg, #020024, #090979, #000428);
+  color: white;
+  box-shadow:
+    0 0 15px rgba(0, 229, 255, 0.3),
+    0 0 40px rgba(0, 229, 255, 0.2),
+    0 0 80px rgba(0, 229, 255, 0.15);
+}
+
+.heading {
+  margin: auto;
+  width: 100%;
+  text-align: center;
+  font-size: 30px;
+}
+
+.logo {
+  align-items: center;
+  justify-content: center;
+  margin-bottom: -40px;
+  margin: auto;
+}
+
+.logo-img {
+  width: 70px;
+  height: auto;
+  margin-bottom: 8px;
+}
+
+.logo h1 {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.heading span {
+  color: #b784ff;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 25px;
+  margin-top: 10px;
+}
+
+.title h2 {
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+.title p {
+  font-size: 14px;
+  color: #dcdcff;
+}
+
+label {
+  font-size: 13px;
+  color: #d7d7ff;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 6px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: none;
+  background: #e6e6e6;
+}
+
+input:focus {
+  outline: none;
+  box-shadow: 0 0 6px #9f6bff;
+}
+
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+.remember {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #d7d7ff;
+}
+
+.remember input {
+  margin: 0;
+}
+
+.options a {
+  color: #22d3ee;
+  text-decoration: none;
+}
+
+.options a:hover {
+  text-decoration: underline;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 25px;
+  background: linear-gradient(90deg, #22c1c3, #a855f7);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: scale(1.03);
+  box-shadow: 0 5px 20px rgba(168, 85, 247, 0.5);
+}
+
+.register {
+  text-align: center;
+  margin-top: 18px;
+  font-size: 14px;
+}
+
+.register a {
+  color: #22d3ee;
+  text-decoration: none;
+}
+
+.register a:hover {
+  text-decoration: underline;
+}
+
+.logo-img {
+  width: 70px;
+  height: auto;
+  display: block;
+  margin: 0 auto 10px;
+}

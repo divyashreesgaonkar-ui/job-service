@@ -1,0 +1,179 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #020024, #090979, #000428);
+  color: white;
+}
+
+/* Main container */
+.container {
+  width: 90%;
+  max-width: 1200px;
+  text-align: center;
+  margin: auto;
+}
+
+/* Logo */
+.logo {
+  width: 100%;
+  transition: all 0.4s ease;
+  margin-top: -10px;
+}
+
+.logo:hover {
+  transform: scale(1.5) rotate(0deg);
+}
+
+/* Title */
+.title {
+  font-size: 48px;
+  font-weight: bold;
+  background: linear-gradient(90deg, #00c6ff, #b47cff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-top: -30px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-top: 30px;
+}
+
+.tagline {
+  font-size: 18px;
+  color: #c9c9ff;
+  margin-top: 0px;
+}
+
+/* Cards container */
+.card-container {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: nowrap;
+  margin-bottom: 70px;
+  margin-top: 20px;
+}
+
+/* Card */
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 35px;
+  width: 320px;
+  transition: all 0.4s ease;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  border-color: #00e5ff;
+
+  box-shadow:
+    0 0 15px rgba(0, 229, 255, 0.3),
+    0 0 40px rgba(0, 229, 255, 0.2),
+    0 0 80px rgba(0, 229, 255, 0.15);
+}
+
+/* Card icon */
+.card-icon {
+  width: 70px;
+  height: 70px;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #00c6ff, #5b7cff);
+  padding: 15px;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0, 198, 255, 0.6);
+}
+
+.card-icon img {
+  width: 100%;
+  transition: transform 0.6s ease;
+}
+
+.card:hover .card-icon img {
+  transform: rotate(360deg) scale(1.1);
+}
+
+/* Card text */
+.card h2 {
+  margin-bottom: 5px;
+}
+
+.card h4 {
+  font-size: 13px;
+}
+
+.card p {
+  font-size: 14px;
+  opacity: 0.8;
+  margin-bottom: 15px;
+}
+
+.card ul {
+  margin-bottom: 20px;
+  padding-left: 18px;
+}
+
+.card li {
+  margin-bottom: 5px;
+}
+
+/* Buttons */
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 25px;
+  background: linear-gradient(90deg, #00d2ff, #a855f7);
+  color: white;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding-bottom: 50px;
+}
+
+.footer-text {
+  font-size: 18px;
+  color: #9aa7c2;
+  margin-bottom: 20px;
+}
+
+.signin-btn {
+  padding: 16px 40px;
+  border: none;
+  border-radius: 40px;
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+
+  background: linear-gradient(90deg, #00c6ff, #3b82f6);
+
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+}
+
+.signin-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+}

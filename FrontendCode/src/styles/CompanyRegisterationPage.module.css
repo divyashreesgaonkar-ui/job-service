@@ -1,0 +1,94 @@
+.companycontainer {
+  width: 100%;
+  max-width: 600px;
+  padding: 30px;
+  background: linear-gradient(135deg, #020024, #090979, #000428);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(84, 42, 193, 0.1);
+  margin: 50px auto;
+  box-shadow: 0 4px 12px rgba(176, 165, 203, 0.1);
+  box-shadow:
+    0 0 15px rgba(0, 229, 255, 0.3),
+    0 0 40px rgba(0, 229, 255, 0.2),
+    0 0 80px rgba(0, 229, 255, 0.15);
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #020024, #090979, #000428);
+  color: white;
+}
+
+.mainheading {
+  text-align: center;
+  font-weight: bold;
+  font-size: 50px;
+  color: #ffffff;
+}
+
+.highlight2 {
+  color: rgb(174, 83, 174);
+}
+
+.highlight1 {
+  color: #fffdff;
+}
+
+.paragraph {
+  text-align: center;
+  font-weight: bold;
+  font-size: 20px;
+  color: #ffffff;
+}
+
+.subheading {
+  text-align: center;
+  font-weight: bold;
+  font-size: 30px;
+  color: #ffffff;
+}
+
+.company-logo {
+  width: 80px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  display: block;
+  margin: 0 auto;
+  transition: all 0.4s ease;
+}
+
+.company-logo:hover {
+  transform: scale(1.5) rotate(0deg);
+}
+
+.formlabel {
+  color: #ffffff;
+  text-align: center;
+}
+
+.formchecklabel {
+  color: #ffffff;
+  text-align: center;
+  margin: auto;
+  margin-left: 160px;
+  margin-top: 15px;
+}
+
+.form-check {
+  width: 20%;
+  margin-top: 20px;
+}
+
+.formgroup {
+  display: flex;
+  flex-direction: column;
+}
+
+input {
+  color: black;
+}
+
+.form-control input {
+  color: black;
+}

@@ -1,0 +1,122 @@
+.register-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  color: white;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #020024, #090979, #000428);
+  color: white;
+}
+
+.register-card {
+  display: block;
+  justify-content: center;
+  width: 100%;
+  max-width: 900px;
+  background: rgba(15, 12, 12, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  box-shadow:
+    0 0 15px rgba(0, 229, 255, 0.3),
+    0 0 40px rgba(0, 229, 255, 0.15);
+}
+
+.register-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.register-logo {
+  margin: auto;
+  display: block;
+  width: 90px;
+}
+
+.register-header h1 {
+  font-size: 36px;
+  margin-bottom: 5px;
+  font: bold;
+}
+
+input {
+  color: black;
+}
+
+.register-header h1 span {
+  color: #a855f7;
+  font: bold;
+}
+
+.register-header p {
+  color: #c9c9ff;
+  font-size: 14px;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group.full {
+  width: 100%;
+}
+
+label {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+input,
+select {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+}
+
+input:focus,
+select:focus {
+  box-shadow: 0 0 10px #00c6ff;
+}
+
+.create-btn {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 25px;
+  background: linear-gradient(90deg, #00d2ff, #a855f7);
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.create-btn:hover {
+  opacity: 0.85;
+}
+
+.form-actions {
+  text-align: center;
+}
+
+.form-actions a {
+  color: #00c6ff;
+}
