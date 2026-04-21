@@ -8,13 +8,12 @@ import lombok.Data;
 
 @Data
 public class ApplicationRequestDTO {
-	
+
 	private Long userId;
 	private Long jobId;
-//	private Long resume_id;
+	// private Long resume_id;
 	private LocalDate appliedDate;
 	private ApplicationStatus applicationStatus;
 	private String remarks;
-	
-	
+
 }
