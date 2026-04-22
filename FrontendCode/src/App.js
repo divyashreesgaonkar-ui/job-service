@@ -9,11 +9,14 @@ import Dashboard from "./pages/Dashboard";
 import Layout from "./pages/Layout";
 import Jobs from "./pages/Jobs";
 import Login from "./pages/Login";
+// import Header from "./components/Header";
+import NotFound from "./components/error/NotFound";
 
 function App() {
   return (
     <div>
       <BrowserRouter>
+   
         <Routes>
           <Route path="/" element={<LandingPage />} />
 
@@ -37,6 +40,8 @@ function App() {
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="jobs" element={<Jobs />} />
           </Route>
+
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </div>
