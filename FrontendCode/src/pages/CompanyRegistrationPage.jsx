@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styles from "../styles/CompanyRegisterationPage.module.css";
 import { Link } from "react-router-dom";
 import logo from "../assets/images/logo.png";
+import { useNavigate } from "react-router-dom";
 
 function CompanyRegistrationPage() {
   const [formData, setFormData] = useState({
@@ -56,6 +57,8 @@ function CompanyRegistrationPage() {
     return Object.keys(tempErrors).length === 0;
   };
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -89,6 +92,7 @@ function CompanyRegistrationPage() {
           description: "",
           status: "active",
         });
+        navigate("/company-dashboard");
         setErrors({});
       } else {
         setSuccessMsg(data.message || "Failed to register company");
@@ -102,10 +106,12 @@ function CompanyRegistrationPage() {
   return (
     <div className={styles.companycontainer}>
       <img src={logo} alt="Company Logo" className={styles["company-logo"]} />
-      <h1 className={styles.mainheading}>
-        <span className={styles.highlight1}>Career</span>
-        <span className={styles.highlight2}>Via</span>
-      </h1>
+      <abbr title="CareerVia" className={styles.abbr}>
+        <h1 className={styles.mainheading}>
+          <span className={styles.highlight1}>Career</span>
+          <span className={styles.highlight2}>Via</span>
+        </h1>
+      </abbr>
       <h3 className={styles.subheading}>Company Registration</h3>
       <p className={styles.paragraph}>
         Please fill out the form below to register your company.
@@ -258,7 +264,7 @@ function CompanyRegistrationPage() {
         </div>
 
         <button type="submit">Register</button>
-
+          
         <div className="col-6">
           <div className="form-check">
             <label className={styles.formchecklabel} htmlFor="gridCheck">

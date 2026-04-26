@@ -92,3 +92,14 @@ input {
 .form-control input {
   color: black;
 }
+
+abbr {
+  text-decoration: none;
+  
+}
+
+abbr:hover {
+  color: #d281d2;
+  text-shadow: 0 0 5px #d17bd1, 0 0 10px #424193, 0 0 20px #43459e;
+  cursor: pointer;
+}

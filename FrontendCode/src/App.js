@@ -11,6 +11,8 @@ import Jobs from "./pages/Jobs";
 import Login from "./pages/Login";
 // import Header from "./components/Header";
 import NotFound from "./components/error/NotFound";
+import CompanyDashboard from "./components/CompanyDashbooard/CompanyDashboard";
+
 
 function App() {
   return (
@@ -33,6 +35,8 @@ function App() {
             path="/company-register"
             element={<CompanyRegistrationPage />}
           />
+
+          <Route path="/company-dashboard" element={<CompanyDashboard />} />
 
           <Route path="/login" element={<Login />} />
 
