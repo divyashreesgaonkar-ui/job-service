@@ -11,13 +11,14 @@ const CompanyDashboard = () => {
             acceptedApplications: 0,
             interviewsScheduled: 0,
             interviewList: [],
+            companyName: "",
         }
     );
 
 
 useEffect(() => {
     // Fetch company data from API
-    fetch("/api/company/dashboard")
+    fetch("/api/companies/dashboard")
         .then((response) => response.json())
         .then((data) => setCompanyData(data))
         .catch((error) => console.error("Error fetching company data:", error));
@@ -28,18 +29,19 @@ return (
         
         {/* Sidebar */}
         <div className={styles.sidebar}>
-            <h2>CareerVia</h2>
+            {/* <h2>CareerVia</h2> */}
             <ul>
-                <li><a href="/company-dashboard">Dashboard</a></li>
-                <li><a href="/company-jobs">Manage Jobs</a></li>
-                <li><a href="/company-applicants">Manage Applicants</a></li>
-                <li><a href="/company-interviews">Manage Interviews</a></li>
-                <li><a href="/company-settings">Settings</a></li>
-                <li><a href="/company-profile">Profile</a></li>
-                <li><a href="/company-logout">Logout</a></li>
-                <li><a href="/company-help">Help</a></li>
-                <li><a href="/company-feedback">Feedback</a></li>
-                <li><a href="/company-support">Support</a></li>
+                <li><b><a href="/company-dashboard">Dashboard</a></b></li>
+                <li><b><a href="/company-jobs">Manage Jobs</a></b></li>
+                <li><b><a href="/company-applicants">Applications</a></b></li>
+                <li><b><a href="/company-interviews">Manage Interviews</a></b></li>
+                <li><b><a href="/company-recruiters">Manage Recruiters</a></b></li>
+                <li><b><a href="/company-settings">Settings</a></b></li>
+                <li><b><a href="/company-profile">Profile</a></b></li>
+                <li><b><a href="/company-logout">Logout</a></b></li>
+                <li><b><a href="/company-help">Help</a></b></li>
+                <li><b><a href="/company-feedback">Feedback</a></b></li>
+                <li><b><a href="/company-support">Support</a></b></li>
             </ul>
         </div>
 
@@ -48,10 +50,10 @@ return (
             
             {/* Header */}
             <div className={styles.header}>
-                <h3>Welcome to Company Dashboard</h3>
+                <h3>Welcome to {companyData.companyName}</h3>
                 <div className="profile">
                     <img src="/profile-pic.jpg" alt="Profile" className={styles.profilePic} />
-                    <span>Company Name</span>
+                    <span>{companyData.companyName}</span>
                 </div>
             </div>
 

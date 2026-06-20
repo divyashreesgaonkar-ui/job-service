@@ -89,6 +89,15 @@ input {
   color: black;
 }
 
+.form-control {
+  color: rgb(5, 1, 1);
+}
+
+
+.form-control-select {
+  color: rgb(128, 125, 125);
+}
+
 .form-control input {
   color: black;
 }
@@ -101,5 +110,59 @@ abbr {
 abbr:hover {
   color: #d281d2;
   text-shadow: 0 0 5px #d17bd1, 0 0 10px #424193, 0 0 20px #43459e;
+  cursor: pointer;
+}
+
+.error-message {
+  color: #ff4d4d;        /* Red color */
+  font-size: 0.8rem;
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+
+
+
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 1000;
+}
+
+.modalBox {
+  background: white;
+  padding: 30px;
+  width: 400px;
+  border-radius: 10px;
+  text-align: center;
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.modalBox h2 {
+  margin-bottom: 15px;
+  color: black;
+}
+
+.modalBox p {
+  margin-bottom: 20px;
+  color: black;
+}
+
+.modalBox button {
+  padding: 10px 20px;
+  border: none;
+  background: #007bff;
+  color: white;
+  border-radius: 5px;
   cursor: pointer;
 }

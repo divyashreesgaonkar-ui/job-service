@@ -12,11 +12,19 @@ import Login from "./pages/Login";
 // import Header from "./components/Header";
 import NotFound from "./components/error/NotFound";
 import CompanyDashboard from "./components/CompanyDashbooard/CompanyDashboard";
+import JobManagement from "./components/ManageJobs/JobManagement";
+import EditJob from "./components/ManageJobs/EditJob";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 
 function App() {
   return (
     <div>
+      <Header/>
+      {/* <div style={{ height: '40px' }}></div> */}
+
+     
       <BrowserRouter>
    
         <Routes>
@@ -37,6 +45,8 @@ function App() {
           />
 
           <Route path="/company-dashboard" element={<CompanyDashboard />} />
+          <Route path="/company-jobs" element={<JobManagement/>} />
+          <Route path="/edit-job/:jobId" element={<EditJob />} />
 
           <Route path="/login" element={<Login />} />
 
@@ -48,6 +58,7 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
+      <Footer/>
     </div>
   );
 }

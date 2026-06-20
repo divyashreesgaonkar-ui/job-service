@@ -20,15 +20,16 @@ body {
 }
 
 /* Logo */
-.logo {
+/* .logo {
   width: 100%;
   transition: all 0.4s ease;
   margin-top: -10px;
+  align-items: left;
 }
 
 .logo:hover {
   transform: scale(1.5) rotate(0deg);
-}
+} */
 
 /* Title */
 .title {
@@ -64,6 +65,7 @@ body {
   flex-wrap: nowrap;
   margin-bottom: 70px;
   margin-top: 20px;
+  text-align: left;
 }
 
 /* Card */

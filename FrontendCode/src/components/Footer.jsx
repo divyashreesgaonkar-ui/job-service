@@ -9,35 +9,35 @@ const Footer = () => {
         padding: "50px 20px",
       }}
     >
-      <div style={{ maxWidth: "700px", margin: "auto" }}>
-        <div className="row text-center justify-content-center">
-          <div className="col-md-3">
-            <h5>CareerVia</h5>
+      <div style={{ maxWidth: "1200px", margin: "auto" }}>
+        <div className="row text-left justify-content-left" style={{padding: "30px", gap: "150px"}}>
+          <div className="col-md-6">
+            <b><h1>CareerVia Icodian</h1></b>
             <p>Find your dream job easily with us.</p>
           </div>
 
-          <div className="col-md-3">
-            <h6>Quick Links</h6>
+          <div className="col-md-6">
+            <b><h1>Quick Links</h1></b>
             <ul className="list-unstyled" style={{ padding: 0 }}>
-              <li>Home</li>
-              <li>About</li>
-              <li>Jobs</li>
-              <li>Companies</li>
+              <li><a href="/">Home</a></li>
+              <li><a href="/about">About us</a></li>
+              <li><a href="/jobs">Jobs</a></li>
+              <li><a href="/companies">Companies</a></li>
             </ul>
           </div>
 
-          <div className="col-md-3">
-            <h6>Services</h6>
+          <div className="col-md-6">
+            <b><h1>Services</h1></b>
             <ul className="list-unstyled">
-              <li>Job Search</li>
-              <li>Resume Builder</li>
-              <li>Career Guidance</li>
-              <li>Support</li>
+              <li><a href="/job-search">Job Search</a></li>
+              <li><a href="/resume-builder">Resume Builder</a></li>
+              <li><a href="/career-guidance">Career Guidance</a></li>
+              <li><a href="/support">Support</a></li>
             </ul>
           </div>
 
-          <div className="col-md-3">
-            <h6>Contact</h6>
+          <div className="col-md-6">
+            <b><h1>Contact</h1></b>
             <p>Email: support@careervia.com</p>
             <p>Phone: +91 9876543210</p>
           </div>
@@ -46,7 +46,7 @@ const Footer = () => {
         <hr style={{ borderColor: "#4b5563", marginTop: "30px" }} />
 
         <p style={{ textAlign: "center", marginTop: "10px" }}>
-          © 2026 CareerVia. All rights reserved.
+          © 2026 CareerVia Icodian. All rights reserved.
         </p>
       </div>
     </footer>

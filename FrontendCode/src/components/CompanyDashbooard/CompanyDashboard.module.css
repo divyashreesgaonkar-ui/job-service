@@ -9,12 +9,14 @@
 
 /* Sidebar styles */
 .sidebar {
-    width: 220px;
-    background-color: hsl(0, 100%, 99%);
-    color:rgb(38, 3, 119);
-    text-autospace: 20px;
+    width: 300px;
+    background-color: hsl(247, 55%, 25%);
+    color:rgb(242, 240, 245);
+    text-autospace: 15px;
     border-radius: 8px;
-    padding: 20px;
+    font-size: 20px;
+    padding: 50px;
+    text-align: left;
 }
 
 .sidebar ul {

@@ -156,3 +156,24 @@ button:hover {
   display: block;
   margin: 0 auto 10px;
 }
+
+.form-control-select {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: none;
+  background-color: #dedfe9;
+  color: #817c7c;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+}
+
+.form-control {
+  color: rgb(4, 4, 4);
+}
+
+.form-label label {
+  color: grey;
+}
