@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -72,7 +73,7 @@ public class ApplicationController {
 		
 	}
 	
-	@PatchMapping("/{applicationId}")
+	@PutMapping("/{applicationId}")
 	public ResponseEntity<ApplicationUpdateResponseDTO> updateApplication(@PathVariable ("applicationId") Long applicationId,
 			@RequestBody ApplicationUpdateRequestDTO request) {
 		ApplicationUpdateResponseDTO response = applicationService.updateApplication(applicationId, request);

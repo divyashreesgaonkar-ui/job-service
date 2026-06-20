@@ -1,5 +1,6 @@
 package com.icodian.careervia.job.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +23,7 @@ public interface JobService {
 
 	List<JobSearchResponseDTO> searchJobs(String jobTitle, String location, JobType jobType, Integer experience, Double salary);
 	
+	List<JobResponseDTO> getJobsByPostedDate(LocalDate postedDate);	
 
 }
 

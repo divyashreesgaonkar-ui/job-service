@@ -1,12 +1,15 @@
 package com.icodian.careervia.job.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import com.icodian.careervia.job.entity.Job;
 import com.icodian.careervia.job.entity.constant.JobType;
 
+@Repository
 public interface JobRepository extends JpaRepository<Job, Long>{
 
 	List<Job> findByJobTitle(String jobTitle);
@@ -22,6 +25,8 @@ public interface JobRepository extends JpaRepository<Job, Long>{
 	List<Job> findByJobTitleAndJobType(String jobTitle, JobType jobType);
 
 	List<Job> findByLocationAndJobType(String location, JobType jobType);
+	
+	List<Job> findByPostedDate(LocalDate postedDate);
 
 /*	@Query("SELECT j FROM Job j WHERE"+
 	"(:job_status IS NULL OR j.job_status = :job_status) AND"+

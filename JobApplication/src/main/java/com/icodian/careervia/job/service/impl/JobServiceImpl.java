@@ -1,5 +1,6 @@
 package com.icodian.careervia.job.service.impl;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -60,7 +61,7 @@ public class JobServiceImpl implements JobService {
 		Job job = new Job();
 
 		job.setJobTitle(request.getJobTitle());
-		job.setDescription(request.getDescriprtion());
+		job.setDescription(request.getDescription());
 		job.setLocation(request.getLocation());
 		job.setExperience(request.getExperience());
 		job.setSalary(request.getSalary());
@@ -165,8 +166,8 @@ public class JobServiceImpl implements JobService {
 			job.setJobTitle(request.getJobTitle());
 		}
 		
-		if(request.getDescriprtion() != null) {
-			job.setDescription(request.getDescriprtion());
+		if(request.getDescription() != null) {
+			job.setDescription(request.getDescription());
 		}
 		
 		if(request.getLocation() != null) {
@@ -193,6 +194,10 @@ public class JobServiceImpl implements JobService {
 			job.setJobStatus(request.getJobStatus());
 		}
 		
+		if (request.getPostedDate() != null) {
+			job.setPostedDate(request.getPostedDate());
+		}
+		
 		Job updateJob = jobRepository.save(job);
 		
 		return mapToUpdateResponse(updateJob);
@@ -212,6 +217,7 @@ public class JobServiceImpl implements JobService {
 		dto.setJobType(updateJob.getJobType());
 		dto.setRequiredSkills(updateJob.getRequiredSkills());
 		dto.setJobStatus(updateJob.getJobStatus());		
+		dto.setPostedDate(updateJob.getPostedDate());
 		
 		return dto;
 	}
@@ -300,6 +306,53 @@ public class JobServiceImpl implements JobService {
 			response.add(dto);
 		}
 		
+		return response;
+	}
+
+	@Override
+	public List<JobResponseDTO> getJobsByPostedDate(LocalDate postedDate) {
+		// TODO Auto-generated method stub
+		
+		if (postedDate == null) {
+			throw new InvalidJobDataException("Please add the posted date. Posted date is empty.");
+		}
+		
+		if (postedDate.isAfter(LocalDate.now())) {
+			throw new InvalidJobDataException("Posted date cannot be in the future.");
+		}
+		
+		log.info("Getting jobs by posted date: {}", postedDate);
+		
+		List<Job> jobs = jobRepository.findByPostedDate(postedDate);
+		
+		if (jobs.isEmpty()) {
+			throw new JobNotFoundException("No jobs found for the posted date: " + postedDate);
+		}
+		
+		List<JobResponseDTO> response = jobs.stream()
+				.map(this::mapToListDateResponse)
+				.collect(Collectors.toList());
+
+		return response;
+		
+	}
+	
+	private JobResponseDTO mapToListDateResponse(Job job) {
+
+		JobResponseDTO response = new JobResponseDTO();
+
+		response.setJobId(job.getJobId());
+		response.setJobTitle(job.getJobTitle());
+		response.setDescription(job.getDescription());
+		response.setLocation(job.getLocation());
+		response.setExperience(job.getExperience());
+		response.setSalary(job.getSalary());
+		response.setJobType(job.getJobType());
+		response.setRequiredSkills(job.getRequiredSkills());
+		response.setPostedDate(job.getPostedDate());
+		response.setCompanyId(job.getCompanyId());
+		response.setJobStatus(job.getJobStatus());
+
 		return response;
 	}
 	

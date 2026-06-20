@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.icodian.careervia.job.entity.constant.JobStatus;
 import com.icodian.careervia.job.entity.constant.JobType;
 
@@ -53,6 +54,7 @@ public class Job {
 
 	@ElementCollection
 	@Column(name = "skill")
+	@JsonFormat(with=JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
 	List<String> requiredSkills = new ArrayList<>();
 
 	@Column(name = "posted_date")

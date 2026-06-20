@@ -18,7 +18,7 @@ public class JobRequestDTO {
 
 //	private Long job_id;
 	private String jobTitle;
-	private String descriprtion;
+	private String description;
 	private String location;
 	private Integer experience;
 	private Double salary;
