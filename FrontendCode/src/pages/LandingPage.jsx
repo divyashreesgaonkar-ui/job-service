@@ -15,11 +15,11 @@ function LandingPage() {
     <>
       <div className="container">
         {/*Logo*/}
-        <div className="header">
+        {/* <div className="header">
           <img src={logo} className="logo" alt="CareerVia Logo" />
           <h1 className="title">CareerVia</h1>
           <p className="tagline">Your Career Your Way</p>
-        </div>
+        </div> */}
 
         {/*Cards*/}
         <div className="card-container">
@@ -28,8 +28,8 @@ function LandingPage() {
             <div className="card-icon">
               <img src={candidateImg} alt="Candidate" />
             </div>
-            <h2>Candidate</h2>
-            <h4>LEARN • COMPETE • SUCCEED</h4>
+            <b><h1>CANDIDATE</h1></b>
+            <b><h4>LEARN • COMPETE • SUCCEED</h4></b>
             <p>
               Gamified Learning platform with skills, challenges and courses to
               upgrade yourself
@@ -49,8 +49,8 @@ function LandingPage() {
               <img src={recruiterImg} alt="Recruiter" />
             </div>
 
-            <h2>Recruiter</h2>
-            <h4>DISCOVER • EVALUATE • HIRE</h4>
+            <b><h1>RECRUITER</h1></b>
+            <b><h4>DISCOVER • EVALUATE • HIRE</h4></b>
 
             <p>
               Post jobs, evaluate candidates based on their skills & courses and
@@ -59,7 +59,7 @@ function LandingPage() {
 
             <ul>
               <li>Smart Job Posting</li>
-              <li>Match the Candidates Accordingly</li>
+              <li>Match the Candidates</li>
               <li>Team Analytics</li>
             </ul>
             <button onClick={() => navigate("/recruiter-register")}>
@@ -72,8 +72,8 @@ function LandingPage() {
               <img src={adminImg} alt="Admin" />
             </div>
 
-            <h2>Admin</h2>
-            <h4>MONITOR • CONTROL • OPTIMIZE</h4>
+            <b><h1>ADMIN</h1></b>
+            <b><h4>MONITOR • CONTROL • OPTIMIZE</h4></b>
 
             <p>
               Comprehensive System Control, Company approvals and platform
@@ -94,11 +94,10 @@ function LandingPage() {
         <footer>
           <p className="footer-text">Already have an account?</p>
           <button onClick={() => navigate("/login")} className="signin-btn">
-            SignIn to System
+            SignIn
           </button>
         </footer>
       </div>
-      <Footer />
     </>
   );
 }

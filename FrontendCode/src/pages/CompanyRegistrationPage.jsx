@@ -3,6 +3,9 @@ import styles from "../styles/CompanyRegisterationPage.module.css";
 import { Link } from "react-router-dom";
 import logo from "../assets/images/logo.png";
 import { useNavigate } from "react-router-dom";
+import Modal from "react-modal";
+
+Modal.setAppElement("#root");
 
 function CompanyRegistrationPage() {
   const [formData, setFormData] = useState({
@@ -18,6 +21,7 @@ function CompanyRegistrationPage() {
 
   const [errors, setErrors] = useState({});
   const [successMsg, setSuccessMsg] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -25,6 +29,13 @@ function CompanyRegistrationPage() {
       [e.target.name]: e.target.value,
     });
   };
+
+  const validateWebsite = (url) => {
+    const pattern = new RegExp(
+      "^(https?:\\/\\/)?(www\\.)?([a-zA-Z0-9]+(-[a-zA-Z0-9]+)*\\.)+[a-zA-Z]{2,}(:\\d+)?(\\/.*)?$"
+    );
+    return pattern.test(url);
+  }
 
   const validate = () => {
     let tempErrors = {};
@@ -36,22 +47,24 @@ function CompanyRegistrationPage() {
       tempErrors.email = "Email is required";
     }
 
-    if (!formData.password) {
-      tempErrors.password = "Password is required";
-    } else if (formData.password.length < 8) {
-      tempErrors.password = "Password must be at least 8 characters";
-    }
+    if (!formData.password || formData.password.length < 8)
+      tempErrors.password = "Password is required and must be at least 8 characters";
+
 
     if (!formData.industry) tempErrors.industry = "Industry is required";
 
     if (!formData.location) tempErrors.location = "Location is required";
 
-    if (!formData.website) tempErrors.website = "Website is required";
+    if (!formData.website) {
+      tempErrors.website = "Website is required";
+    } else if (!validateWebsite(formData.website)) {
+      tempErrors.website = "Please enter a valid website URL";
+    }
 
-    if (!formData.description)
-      tempErrors.description = "Description is required";
+    // if (!formData.description)
+    //   tempErrors.description = "Description is required";
 
-    if (!formData.status) tempErrors.status = "Status is required";
+    // if (!formData.status) tempErrors.status = "Status is required";
 
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
@@ -62,9 +75,20 @@ function CompanyRegistrationPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validate()) {
-      return;
-    }
+      if (!validate()) {
+        return;
+      }
+      setShowModal(true);
+  }
+
+  const handleConfirm = async () => {
+
+    setShowModal(false);
+    // e.preventDefault();
+
+    // if (!validate()) {
+    //   return;
+    // }
 
     try {
       const response = await fetch("http://localhost:8081/api/companies", {
@@ -92,7 +116,7 @@ function CompanyRegistrationPage() {
           description: "",
           status: "active",
         });
-        navigate("/company-dashboard");
+        navigate("/login");
         setErrors({});
       } else {
         setSuccessMsg(data.message || "Failed to register company");
@@ -120,7 +144,7 @@ function CompanyRegistrationPage() {
       <form onSubmit={handleSubmit} className={styles.formgroup}>
         <div className="col-md-12">
           <label htmlFor="inputCompanyName" className={styles.formlabel}>
-            Company Name:
+            Company Name *
           </label>
           <input
             type="text"
@@ -131,14 +155,12 @@ function CompanyRegistrationPage() {
             onChange={handleChange}
             className="form-control"
           />
-          {errors.companyName && (
-            <p className="error-message">{errors.companyName}</p>
-          )}
+          {errors.companyName && <p className={styles["error-message"]}>{errors.companyName}</p>}
         </div>
 
         <div className="col-md-12">
           <label htmlFor="inputwebsite" className={styles.formlabel}>
-            Company Website:
+            Company Website *
           </label>
           <input
             type="text"
@@ -149,12 +171,12 @@ function CompanyRegistrationPage() {
             onChange={handleChange}
             className="form-control"
           />
-          {errors.website && <p className="error-message">{errors.website}</p>}
+          {errors.website && <p className={styles["error-message"]}>{errors.website}</p>}
         </div>
 
         <div className="col-md-12">
           <label htmlFor="inputlocation" className={styles.formlabel}>
-            Company Location:
+            Company Location *
           </label>
           <input
             type="text"
@@ -166,13 +188,13 @@ function CompanyRegistrationPage() {
             className="form-control"
           />
           {errors.location && (
-            <p className="error-message">{errors.location}</p>
+            <p className={styles["error-message"]}>{errors.location}</p>
           )}
         </div>
 
         <div className="col-md-12">
           <label htmlFor="inputEmail" className={styles.formlabel}>
-            Email ID:
+            Email ID *
           </label>
           <input
             type="email"
@@ -183,12 +205,12 @@ function CompanyRegistrationPage() {
             value={formData.email}
             onChange={handleChange}
           />
-          {errors.email && <p className="error-message">{errors.email}</p>}
+          {errors.email && <p className={styles["error-message"]}>{errors.email}</p>}
         </div>
 
         <div className="col-md-12">
           <label htmlFor="inputPassword" className={styles.formlabel}>
-            Password:
+            Password *
           </label>
           <input
             type="password"
@@ -200,54 +222,74 @@ function CompanyRegistrationPage() {
             onChange={handleChange}
           />
           {errors.password && (
-            <p className="error-message">{errors.password}</p>
+            <p className={styles["error-message"]}>{errors.password}</p>
           )}
         </div>
 
         <div className="col-md-12">
           <label htmlFor="inputState" className={styles.formlabel}>
-            Industry Type:
+            Industry Type *
           </label>
           <select
             name="industry"
             id="inputState"
-            className="form-control"
+            className={
+              formData.industry
+                ? styles["form-control"]
+                : styles["form-control-select"]
+            }
             placeholder="Industry Type"
             value={formData.industry}
             onChange={handleChange}
           >
-            <option value="">Select Industry</option>
-            <option value="technology">Technology</option>
-            <option value="finance">Finance</option>
-            <option value="healthcare">Healthcare</option>
-            <option value="education">Education</option>
-            <option value="manufacturing">Manufacturing</option>
-            <option value="retail">Retail</option>
-            <option value="other">Other</option>
+            <option value="">
+              Select Industry
+            </option>
+            <option value="technology">
+              Technology
+            </option>
+            <option value="finance">
+              Finance
+            </option>
+            <option value="healthcare">
+              Healthcare
+            </option>
+            <option value="education">
+              Education
+            </option>
+            <option value="manufacturing">
+              Manufacturing
+            </option>
+            <option value="retail">
+              Retail
+            </option>
+            <option value="other">
+              Other
+            </option>
           </select>
           {errors.industry && (
-            <p className="error-message">{errors.industry}</p>
+            <p className={styles["error-message"]}>{errors.industry}</p>
           )}
         </div>
 
         <div className="col-12">
           <label htmlFor="inputDescription" className={styles.formlabel}>
-            Company Description:
+            Company Description
           </label>
           <textarea
             name="description"
             placeholder="Enter company description"
             id="inputDescription"
-            className="form-control"
+            className={styles["form-control"]}
             value={formData.description}
             onChange={handleChange}
           />
-          {errors.description && (
+          {/* {errors.description && (
             <p className="error-message">{errors.description}</p>
-          )}
+          )} */}
         </div>
 
-        <div className="col-md-12">
+        {/* <div className="col-md-12">
           <label htmlFor="inputStatus" className={styles.formlabel}>
             Company Status:
           </label>
@@ -261,10 +303,10 @@ function CompanyRegistrationPage() {
             <option value="inactive">INACTIVE</option>
           </select>
           {errors.status && <p className="error-message">{errors.status}</p>}
-        </div>
+        </div> */}
 
-        <button type="submit">Register</button>
-          
+        <button type="submit" onClick={handleSubmit}>Register</button>
+
         <div className="col-6">
           <div className="form-check">
             <label className={styles.formchecklabel} htmlFor="gridCheck">
@@ -272,7 +314,26 @@ function CompanyRegistrationPage() {
             </label>
           </div>
         </div>
+
+        {/* Modal Popup */}
+      {showModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalBox}>
+            <h2>Registration Successful</h2>
+            <p>Your account has been created successfully.</p>
+
+            <button onClick={() => handleConfirm()}>
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
       </form>
+
+      
+
+      
     </div>
   );
 }

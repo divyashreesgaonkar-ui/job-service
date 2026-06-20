@@ -48,9 +48,9 @@ export default function Layout() {
         </div>
 
         {/* Page Content */}
-        <div className="p-6 overflow-y-auto">
-          <Outlet />
-        </div>
+        <div className="flex-1 p-6 overflow-y-auto w-full">
+  <Outlet />
+</div>
       </div>
     </div>
   );
